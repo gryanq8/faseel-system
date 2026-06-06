@@ -692,13 +692,14 @@ function setConn(state) {
 var DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
 window.onload = function() {
-  var url = localStorage.getItem('supa_url');
-  var key = localStorage.getItem('supa_key');
-  if (url && key) {
-    SUPA_URL = url; SUPA_KEY = key;
-    document.getElementById('configScreen').style.display = 'none';
-    init();
-  }
+  // بيانات الاتصال الثابتة — تغيير عند نقل السيرفر
+  var FIXED_URL = 'https://wuxeeyhogzbdrnjxjvoi.supabase.co';
+  var FIXED_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eGVleWhvZ3piZHJuanhqdm9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjY4NjUsImV4cCI6MjA5NjM0Mjg2NX0.JirtGfINXlby3yhMcUSn50pZ51kscQp1AMSEhWMKAxM';
+  SUPA_URL = FIXED_URL; SUPA_KEY = FIXED_KEY;
+  localStorage.setItem('supa_url', FIXED_URL);
+  localStorage.setItem('supa_key', FIXED_KEY);
+  document.getElementById('configScreen').style.display = 'none';
+  init();
 };
 
 function init() {
