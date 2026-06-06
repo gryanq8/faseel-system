@@ -582,32 +582,14 @@ var SUPA_URL = '', SUPA_KEY = '';
 function saveConfig() {
   var url = document.getElementById('cfg_url').value.trim().replace(/\/$/, '');
   var key = document.getElementById('cfg_key').value.trim();
-  var err = document.getElementById('configErr');
-  var btn = document.getElementById('cfgBtn');
   if (!url || !key) { showCfgErr('يرجى إدخال URL و Key'); return; }
   if (!url.startsWith('https://')) { showCfgErr('URL يجب أن يبدأ بـ https://'); return; }
-  btn.textContent = 'جار الاتصال...';
-  btn.disabled = true;
-  // Test connection
-  var testHeaders = { 'Content-Type': 'application/json', 'apikey': key, 'Authorization': 'Bearer ' + key };
-  fetch(url + '/rest/v1/officers?select=id&limit=1', {
-    headers: testHeaders
-  }).then(function(r) {
-    if (r.ok || r.status === 200 || r.status === 206 || r.status === 404) {
-      localStorage.setItem('supa_url', url);
-      localStorage.setItem('supa_key', key);
-      SUPA_URL = url; SUPA_KEY = key;
-      document.getElementById('configScreen').style.display = 'none';
-      init();
-    } else {
-      showCfgErr('فشل الاتصال — تحقق من URL و Key (Status: ' + r.status + ')');
-      btn.textContent = 'الدخول للنظام'; btn.disabled = false;
-    }
-  }).catch(function(e) {
-    console.error('Connection error:', e);
-    showCfgErr('لا يمكن الوصول للخادم — تأكد من صحة الـ URL والـ Key. URL يجب أن يبدأ بـ https://');
-    btn.textContent = 'الدخول للنظام'; btn.disabled = false;
-  });
+  // Save directly without testing — just enter the system
+  localStorage.setItem('supa_url', url);
+  localStorage.setItem('supa_key', key);
+  SUPA_URL = url; SUPA_KEY = key;
+  document.getElementById('configScreen').style.display = 'none';
+  init();
 }
 
 function showCfgErr(msg) {
