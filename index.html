@@ -666,7 +666,37 @@ tbody tr:hover{background:var(--surface2);}
     <div id="fList" style="margin-top:12px;"></div>
   </div>
 
-  <div class="sh"><div class="sn">٤</div><h2>المحجوزون — الويكند</h2></div>
+  <div class="sh"><div class="sn">٤</div><h2>عرفاء الفصائل</h2></div>
+  <div class="card">
+    <div style="font-size:12px;color:var(--ink2);margin-bottom:10px;line-height:1.6;">
+      ارفع ملف CSV يحتوي على: <strong>الفصيل، اسم العريف، الرقم العسكري</strong><br>
+      عند الرفع يُحدَّث العريف لكل فصيل تلقائياً في قاعدة البيانات.
+    </div>
+    <input type="file" id="arifFile" accept=".csv" style="display:none;" onchange="importArif(this)">
+    <div class="brow">
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('arifFile').click()">رفع ملف العرفاء</button>
+      <button class="btn btn-ghost btn-sm" onclick="downloadTemplate('arif')">تحميل النموذج</button>
+    </div>
+    <div id="arifImportResult" style="margin-top:8px;font-size:12px;"></div>
+    <div id="arifCurrentList" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="sh"><div class="sn">٤</div><h2>العرفاء</h2></div>
+  <div class="card">
+    <div style="font-size:12px;color:var(--ink2);margin-bottom:10px;">
+      ارفع ملف CSV يحتوي على: <strong>الفصيل، السرية، الكتيبة، السنة الدراسية، اسم العريف، الرقم العسكري</strong><br>
+      <span style="color:var(--ink3);">سيتم تحديث عريف كل فصيل تلقائياً في قاعدة البيانات</span>
+    </div>
+    <input type="file" id="arifFile" accept=".csv" style="display:none;" onchange="importArifs(this)">
+    <div class="brow">
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('arifFile').click()">رفع ملف العرفاء</button>
+      <button class="btn btn-ghost btn-sm" onclick="downloadTemplate('arifs')">تحميل النموذج</button>
+    </div>
+    <div id="arifImportResult" style="margin-top:8px;font-size:12px;"></div>
+    <div id="arifList" style="margin-top:10px;max-height:200px;overflow-y:auto;"></div>
+  </div>
+
+  <div class="sh"><div class="sn">٥</div><h2>المحجوزون — الويكند</h2></div>
   <div class="card">
     <div style="font-size:12px;color:var(--ink2);margin-bottom:10px;">ارفع ملف Excel للمحجوزين في الويكند القادم</div>
     <input type="file" id="detentionsFile" accept=".csv" style="display:none;" onchange="importDetentions(this)">
@@ -678,7 +708,7 @@ tbody tr:hover{background:var(--surface2);}
     <div id="detList" style="margin-top:10px;"></div>
   </div>
 
-  <div class="sh"><div class="sn">٥</div><h2>إدارة المستخدمين</h2></div>
+  <div class="sh"><div class="sn">٦</div><h2>إدارة المستخدمين</h2></div>
   <div class="card" id="usersSetupCard">
     <div id="usersList"><div class="loading"><div class="spinner"></div></div></div>
   </div>
@@ -1739,6 +1769,53 @@ function importStudents(input){
   input.value='';
 }
 
+function importArifs(input){
+  var file=input.files[0]; if(!file)return;
+  var res=document.getElementById('arifImportResult');
+  res.innerHTML='<div style="color:var(--ink3);">جار المعالجة...</div>';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var text=e.target.result;
+    var lines=text.split('\n');
+    var headers=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});
+    var updated=0, notFound=[];
+    var promises=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;
+      var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
+      var obj={};headers.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var fName=obj['الفصيل']||obj['faseel']||'';
+      var arifName=obj['اسم العريف']||obj['arif']||'';
+      if(!fName||!arifName)continue;
+      var f=C.faseels.find(function(x){return x.name===fName;});
+      if(!f){notFound.push(fName);continue;}
+      (function(faseelId, arif){
+        var p=fetch(SUPA_URL+'/rest/v1/faseels?id=eq.'+faseelId,{
+          method:'PATCH',
+          headers:getH({'Prefer':'return=representation'}),
+          body:JSON.stringify({arif:arif})
+        }).then(function(r){
+          if(r.ok){
+            var idx=C.faseels.findIndex(function(x){return x.id===faseelId;});
+            if(idx>=0) C.faseels[idx].arif=arif;
+            updated++;
+          }
+        });
+        promises.push(p);
+      })(f.id, arifName);
+    }
+    Promise.all(promises).then(function(){
+      var msg='<span style="color:var(--green);">تم تحديث عريف '+updated+' فصيل</span>';
+      if(notFound.length) msg+='<br><span style="color:var(--amber);">فصائل غير موجودة: '+notFound.join('، ')+'</span>';
+      res.innerHTML=msg;
+      fillSelects(); renderSetup();
+      toast('تم تحديث العرفاء');
+    });
+  };
+  reader.readAsText(file,'UTF-8');
+  input.value='';
+}
+
 function importDetentions(input){
   var file=input.files[0]; if(!file)return;
   var res=document.getElementById('detResult');
@@ -1768,10 +1845,85 @@ function importDetentions(input){
   input.value='';
 }
 
+function importArif(input){
+  var file=input.files[0]; if(!file)return;
+  var res=document.getElementById('arifImportResult');
+  res.innerHTML='<span style="color:var(--ink3);">جار المعالجة...</span>';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var text=e.target.result;
+    var lines=text.split('\n');
+    var headers=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});
+    var updated=0, notFound=[];
+    var promises=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;
+      var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
+      var obj={};headers.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var fname=obj['الفصيل']||obj['faseel']||'';
+      var aname=obj['اسم العريف']||obj['arif']||'';
+      var amil=obj['الرقم العسكري']||obj['military_number']||'';
+      if(!fname||!aname){continue;}
+      var f=C.faseels.find(function(x){return x.name===fname;});
+      if(!f){notFound.push(fname);continue;}
+      var arifVal=aname+(amil?' ('+amil+')':'');
+      var p=fetch(SUPA_URL+'/rest/v1/faseels?id=eq.'+f.id,{
+        method:'PATCH',
+        headers:getH({'Prefer':'return=representation'}),
+        body:JSON.stringify({arif:aname})
+      }).then(function(r){
+        if(r.ok){
+          var idx=C.faseels.findIndex(function(x){return x.id===f.id;});
+          if(idx>=0) C.faseels[idx].arif=aname;
+          updated++;
+        }
+      });
+      promises.push(p);
+    }
+    Promise.all(promises).then(function(){
+      var msg='<span style="color:var(--green);">تم تحديث '+updated+' فصيل</span>';
+      if(notFound.length) msg+='<br><span style="color:var(--amber);">لم يُعثر على: '+notFound.join('، ')+'</span>';
+      res.innerHTML=msg;
+      renderSetup(); fillSelects(); toast('تم تحديث العرفاء');
+    });
+  };
+  reader.readAsText(file,'UTF-8');
+  input.value='';
+}
+
+function renderArifList(){
+  var el=document.getElementById('arifCurrentList'); if(!el)return;
+  if(!C.faseels.length){el.innerHTML='';return;}
+  var html='<div style="font-size:11px;margin-top:8px;">';
+  html+='<div style="font-weight:700;color:var(--ink2);margin-bottom:6px;">العرفاء الحاليون:</div>';
+  C.faseels.forEach(function(f){
+    html+='<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);align-items:center;">';
+    html+='<span style="flex:1;font-weight:700;">'+f.name+'</span>';
+    html+='<span style="color:var(--ink3);font-size:10px;">'+(f.seria||'')+'</span>';
+    html+='<span style="color:var(--royal2);">'+(f.arif||'<span style="color:var(--red);">غير محدد</span>')+'</span>';
+    html+='</div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
 function downloadTemplate(type){
   var bom='\uFEFF';
   var csv='';
-  if(type==='students'){
+  if(type==='arif'){
+    var bom='\uFEFF';
+    var csv='الفصيل,السرية,الكتيبة,السنة الدراسية,اسم العريف,الرقم العسكري\n';
+    csv+='الفصيل الأول,السرية الأولى,الكتيبة الأولى,السنة الأولى,أحمد محمد الكويتي,10001\n';
+    csv+='الفصيل الثاني,السرية الأولى,الكتيبة الأولى,السنة الأولى,خالد سعد العنزي,10009\n';
+    dlFile(bom+csv,'نموذج_عرفاء_الفصائل.csv','text/csv;charset=utf-8');
+    return;
+  }
+  if(type==='arifs'){
+    csv='الفصيل,السرية,الكتيبة,السنة الدراسية,اسم العريف,الرقم العسكري\n';
+    csv+='الفصيل الأول,السرية الأولى,الكتيبة الأولى,السنة الأولى,أحمد محمد الكويتي,10001\n';
+    csv+='الفصيل الثاني,السرية الأولى,الكتيبة الأولى,السنة الأولى,خالد سعد العنزي,10009\n';
+    dlFile(bom+csv,'نموذج_العرفاء.csv','text/csv;charset=utf-8');
+  } else if(type==='students'){
     csv='الاسم,الرقم العسكري,الدفعة,نوع الدراسة,السنة الدراسية,الفصيل,السرية,الإدارة,الكتيبة\n';
     csv+='أحمد محمد الكويتي,10001,40,طالب ضابط,السنة الأولى,الفصيل الأول,السرية الأولى,إدارة التدريب الميداني,الكتيبة الأولى\n';
     csv+='خالد سعد العنزي,10002,27,طالب ضابط اختصاص,اختصاص,الفصيل الخامس,السرية الثانية,إدارة التدريب الميداني,الكتيبة الأولى\n';
@@ -1859,6 +2011,23 @@ function renderSetup(){
   renderList('offList',C.officers,'officers','officers',['rank','faseel']);
   renderList('grdList',C.guards,'guard_officers','guards',['rank']);
   renderList('fList',C.faseels,'faseels','faseels',['seria','study_year','arif']);
+  // Arif list
+  var al=document.getElementById('arifList');
+  if(al){
+    if(!C.faseels.length){al.innerHTML='<div style="color:var(--ink3);font-size:12px;">لا توجد فصائل مضافة</div>';}
+    else{
+      var h='<div style="font-size:11px;">';
+      C.faseels.forEach(function(f){
+        var hasArif=f.arif&&f.arif.trim();
+        h+='<div style="display:flex;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);gap:8px;">';
+        h+='<div style="flex:1;"><strong style="font-size:12px;">'+f.name+'</strong><span style="color:var(--ink3);margin-right:6px;font-size:11px;">'+(f.study_year||'')+'</span></div>';
+        h+='<span style="font-size:12px;color:'+(hasArif?'var(--ink)':'var(--red)')+';">'+(hasArif?f.arif:'غير محدد')+'</span>';
+        h+='</div>';
+      });
+      h+='</div>';
+      al.innerHTML=h;
+    }
+  }
   // Detentions
   var dl=document.getElementById('detList');
   if(dl){
@@ -1866,6 +2035,7 @@ function renderSetup(){
     else{var h='';C.detentions.forEach(function(d){h+='<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;"><strong style="flex:1;">'+d.student_name+'</strong><span style="color:var(--ink3);">'+d.faseel+'</span><span style="color:var(--amber);">'+fmtD(d.detention_from)+' — '+fmtD(d.detention_to)+'</span></div>';});dl.innerHTML=h;}
   }
   // Users
+  renderArifList();
   var ul=document.getElementById('usersList');
   if(ul&&CUR_USER.role==='مدير'){
     var h='<div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الصلاحية</th></tr></thead><tbody>';
