@@ -340,11 +340,15 @@ tbody tr:hover{background:var(--surface2);}
         </div>
         <div class="g2">
           <div class="field">
+            <label>العريف</label>
+            <input type="text" id="fp_arif_name" readonly style="background:var(--surface2);font-size:12px;" placeholder="يظهر تلقائياً">
+          </div>
+          <div class="field">
             <label>حالة العريف</label>
-            <select id="fp_arif">
+            <select id="fp_arif" onchange="onArifStatusChange()">
               <option value="حاضر">حاضر</option>
+              <option value="غائب بعذر">غائب بعذر</option>
               <option value="غائب">غائب</option>
-              <option value="متأخر">متأخر</option>
             </select>
           </div>
           <div class="field">
@@ -384,7 +388,7 @@ tbody tr:hover{background:var(--surface2);}
           <input type="date" id="g_date">
         </div>
       </div>
-      <div class="g3">
+      <div class="g2">
         <div class="field">
           <label>نوع المناوبة</label>
           <select id="g_type" onchange="onGuardTypeChange()">
@@ -392,6 +396,19 @@ tbody tr:hover{background:var(--surface2);}
             <option value="ويكند">ويكند</option>
           </select>
         </div>
+        <div class="field" id="g_year_wrap">
+          <label>السنة الدراسية المسؤول عنها</label>
+          <select id="g_study_year" onchange="onGuardYearChange()">
+            <option value="">— اختر السنة —</option>
+            <option value="السنة الأولى">السنة الأولى</option>
+            <option value="السنة الثانية">السنة الثانية</option>
+            <option value="السنة الثالثة">السنة الثالثة</option>
+            <option value="السنة الرابعة">السنة الرابعة</option>
+            <option value="اختصاص">اختصاص</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2" style="display:none;" id="g_time_wrap">
         <div class="field">
           <label>من الساعة</label>
           <input type="time" id="g_from_time">
@@ -432,6 +449,12 @@ tbody tr:hover{background:var(--surface2);}
         </div>
       </div>
 
+      <!-- فصائل السنة المختارة -->
+      <div id="guardYearFaseels" style="display:none;margin-top:10px;">
+        <div style="font-size:12px;font-weight:700;color:var(--royal);margin-bottom:6px;">فصائل السنة الدراسية المسؤول عنها:</div>
+        <div id="guardFaseelsList" style="font-size:12px;color:var(--ink2);background:var(--blue-bg);padding:10px;border-radius:8px;line-height:1.8;"></div>
+      </div>
+
       <!-- محجوزو الويكند -->
       <div id="weekendDetained" style="display:none;">
         <div style="font-size:12px;font-weight:700;color:var(--amber);margin:10px 0 6px;">الطلبة المحجوزون في هذا الويكند:</div>
@@ -443,6 +466,10 @@ tbody tr:hover{background:var(--surface2);}
         <textarea id="g_notes" placeholder="اختياري..."></textarea>
       </div>
     </div>
+
+    <div class="sh"><div class="sn">التتميم</div><span class="sh-note">تأكيد الحضور — يمكن إضافة أكثر من مرة</span></div>
+    <div id="gTattContainer"></div>
+    <button class="btn btn-ghost btn-sm no-print" onclick="addTatt('g')" style="margin-bottom:12px;border-color:var(--royal3);color:var(--royal3);">+ إضافة تتميم</button>
 
     <div class="sh"><div class="sn">انضباطيات</div><span class="sh-note">اختياري</span></div>
     <div id="gVioContainer"></div>
@@ -898,11 +925,110 @@ function onFaseelSelect(){
   if(f.study_year)parts.push(f.study_year);
   inf.textContent=parts.join('  ·  '); inf.style.display='';
   flds.style.display='';
+  // Show arif name automatically
+  var arifEl=document.getElementById('fp_arif_name');
+  if(arifEl) arifEl.value=f.arif||'غير محدد';
+  // Reset arif status
+  var arifSt=document.getElementById('fp_arif');
+  if(arifSt) arifSt.value='حاضر';
+  document.getElementById('arifDeputyWrap').style.display='none';
   // Set present to count by default
   var total=f.count||0;
   document.getElementById('fp_present').value=total;
   document.getElementById('fp_absent').value=0;
   document.getElementById('fp_late').value=0;
+}
+
+// ════ TATTIMEEM ════
+var fTatts = [], gTatts = [];
+
+function addTatt(prefix){
+  var id = Date.now();
+  var now = new Date();
+  var timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  if(prefix==='f') fTatts.push({id:id, time:timeStr});
+  else gTatts.push({id:id, time:timeStr});
+  renderTattContainer(prefix);
+}
+
+function removeTatt(prefix, id){
+  if(prefix==='f') fTatts=fTatts.filter(function(x){return x.id!==id;});
+  else gTatts=gTatts.filter(function(x){return x.id!==id;});
+  renderTattContainer(prefix);
+}
+
+function renderTattContainer(prefix){
+  var items = prefix==='f'?fTatts:gTatts;
+  var cont = document.getElementById(prefix+'TattContainer');
+  if(!cont)return;
+  if(!items.length){cont.innerHTML='';return;}
+  var html='';
+  items.forEach(function(item){
+    var id=item.id;
+    html+='<div style="background:var(--blue-bg);border:1px solid #BFDBFE;border-radius:var(--r);padding:12px;margin-bottom:8px;">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;justify-content:space-between;">';
+    html+='<span style="font-size:12px;font-weight:700;color:var(--royal);">تتميم</span>';
+    html+='<button class="btn btn-ghost btn-sm" onclick="removeTatt(\''+prefix+'\','+id+')" style="padding:3px 8px;font-size:11px;">حذف</button>';
+    html+='</div>';
+    html+='<div class="g2">';
+    html+='<div class="field"><label>الوقت</label><input type="time" id="tt_time_'+id+'" value="'+item.time+'"></div>';
+    var btnMinus2='<button class="nb" onclick="nudge(\'tt_count_'+id+'\', -1)">-</button>';
+    var btnPlus2='<button class="nb" onclick="nudge(\'tt_count_'+id+'\', 1)">+</button>';
+    html+='<div class="field"><label>العدد</label><div class="ni">'+btnMinus2+'<input type="number" id="tt_count_'+id+'" value="0" min="0">'+btnPlus2+'</div></div>';
+    html+='</div>';
+    html+='<div class="field"><label>ملاحظة <span style="font-size:10px;color:var(--ink3);">(اختياري — مثال: ٣ في العيادة)</span></label><input type="text" id="tt_note_'+id+'" placeholder="اختياري"></div>';
+    html+='</div>';
+  });
+  cont.innerHTML=html;
+}
+
+function collectTatts(prefix){
+  var items=prefix==='f'?fTatts:gTatts; var out=[];
+  items.forEach(function(item){
+    var id=item.id;
+    var count=getNum('tt_count_'+id);
+    out.push({time:getVal('tt_time_'+id),count:count,note:getVal('tt_note_'+id)});
+  });
+  return out;
+}
+
+// ════ ARIF FUNCTIONS ════
+function onArifStatusChange(){
+  var status=getVal('fp_arif');
+  var wrap=document.getElementById('arifDeputyWrap');
+  if(!wrap)return;
+  if(status==='غائب'||status==='غائب بعذر'){
+    wrap.style.display='';
+    // fill deputy from faseel students
+    var fid=getVal('f_faseel_sel');
+    var f=C.faseels.find(function(x){return x.id===fid;});
+    var dep=document.getElementById('fp_arif_deputy');
+    if(dep&&f){
+      dep.innerHTML='<option value="">— اختر البديل —</option>';
+      var students=C.students.filter(function(s){return s.faseel===f.name;});
+      students.forEach(function(s){
+        var opt=document.createElement('option');
+        opt.value=s.name; opt.textContent=s.name+(s.military_number?' ('+s.military_number+')':'');
+        dep.appendChild(opt);
+      });
+    }
+  } else {
+    wrap.style.display='none';
+  }
+}
+
+// ════ GUARD YEAR ════
+function onGuardYearChange(){
+  var year=getVal('g_study_year');
+  var wrap=document.getElementById('guardYearFaseels');
+  var list=document.getElementById('guardFaseelsList');
+  if(!year||!wrap||!list){if(wrap)wrap.style.display='none';return;}
+  var faseels=C.faseels.filter(function(f){return f.study_year===year;});
+  if(!faseels.length){wrap.style.display='none';return;}
+  wrap.style.display='';
+  list.innerHTML=faseels.map(function(f){
+    return '<span style="display:inline-block;background:#fff;border:1px solid var(--border);border-radius:5px;padding:2px 8px;margin:2px;font-size:11px;">'+f.name+(f.seria?' / '+f.seria:'')+'</span>';
+  }).join('');
 }
 
 function onGuardTypeChange(){
@@ -1016,11 +1142,15 @@ function saveFaseel(){
   var f=C.faseels.find(function(x){return x.id===fid;});
   var dt=new Date(date+'T12:00:00');
   var btn=document.getElementById('fSaveBtn'); btn.textContent='جار الحفظ...'; btn.disabled=true;
+  var arifDeputy=getVal('fp_arif_deputy')||'';
+  var tatts=collectTatts('f');
   var rec={officer_name:officer,officer_rank:getVal('f_rank'),faseel_id:fid,
     faseel_name:f?f.name:'',arif_name:f?f.arif:'',seria:f?f.seria:'',idara:f?f.idara:'',
     total:f?f.count:0,record_date:date,day_name:DAYS[dt.getDay()],
     present:getNum('fp_present'),absent:getNum('fp_absent'),late:getNum('fp_late'),
-    arif_status:getVal('fp_arif')||'حاضر',notes:getVal('fp_notes'),week_notes:getVal('f_week_notes')};
+    arif_status:getVal('fp_arif')||'حاضر',arif_deputy:arifDeputy,
+    tattimeem:JSON.stringify(tatts),
+    notes:getVal('fp_notes'),week_notes:getVal('f_week_notes')};
   sbInsert('faseel_records',rec).then(function(res){
     var inserted=Array.isArray(res)?res[0]:res;
     var rid=inserted?inserted.id:null;
@@ -1055,10 +1185,14 @@ function saveGuard(){
   if(!date){toast('حدد التاريخ','red');return;}
   var dt=new Date(date+'T12:00:00');
   var btn=document.getElementById('gSaveBtn'); btn.textContent='جار الحفظ...'; btn.disabled=true;
+  var gTatts=collectTatts('g');
   var rec={officer_name:officer,record_date:date,day_name:DAYS[dt.getDay()],
     from_time:getVal('g_from_time'),to_time:getVal('g_to_time'),
-    guard_type:getVal('g_type')||'يوم عادي',count:getNum('g_count'),
-    detained:getNum('g_detain'),medical:getNum('g_med'),notes:getVal('g_notes')};
+    guard_type:getVal('g_type')||'يوم عادي',
+    study_year:getVal('g_study_year')||'',
+    count:getNum('g_count'),detained:getNum('g_detain'),medical:getNum('g_med'),
+    tattimeem:JSON.stringify(gTatts),
+    notes:getVal('g_notes')};
   sbInsert('guard_records',rec).then(function(res){
     var inserted=Array.isArray(res)?res[0]:res;
     C.guard_records.unshift(inserted||rec);
@@ -1079,6 +1213,9 @@ function clearGuard(){
   ['g_count','g_detain','g_med'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=0;});
   var gt=document.getElementById('g_type');if(gt)gt.value='يوم عادي';
   document.getElementById('weekendDetained').style.display='none';
+  var gyf=document.getElementById('guardYearFaseels');if(gyf)gyf.style.display='none';
+  var gsy=document.getElementById('g_study_year');if(gsy)gsy.value='';
+  gTatts=[]; renderTattContainer('g');
   gVios=[]; renderVioContainer('g');
 }
 
@@ -1140,6 +1277,19 @@ function renderRecs(){
       html+='</div>';
     }
     if(r.notes) html+='<div style="font-size:12px;color:var(--ink2);padding:6px 8px;background:var(--surface2);border-radius:6px;margin-bottom:6px;">'+r.notes+'</div>';
+    // Show tattimeem
+    var tatts=[];try{tatts=JSON.parse(r.tattimeem||'[]');}catch(e){tatts=[];}
+    if(tatts.length){
+      html+='<div style="margin-bottom:6px;">';
+      html+='<div style="font-size:11px;font-weight:700;color:var(--royal2);margin-bottom:3px;">التتميم:</div>';
+      tatts.forEach(function(t){
+        html+='<div style="display:inline-flex;align-items:center;gap:6px;background:var(--blue-bg);border:1px solid #BFDBFE;border-radius:5px;padding:3px 8px;margin:2px;font-size:11px;">';
+        html+='<strong>'+t.time+'</strong> — <strong style="color:var(--royal);">'+t.count+'</strong>';
+        if(t.note) html+=' — '+t.note;
+        html+='</div>';
+      });
+      html+='</div>';
+    }
     if(recVios.length){
       html+='<div style="margin-top:6px;">';
       html+='<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px;">مخالفات ('+recVios.length+'):</div>';
@@ -1288,7 +1438,8 @@ function generateReport(){
         html+='<td style="text-align:center;color:var(--green);font-weight:700;">'+r.present+'</td>';
         html+='<td style="text-align:center;font-weight:700;color:'+(r.absent>0?'var(--red)':'var(--ink3)')+';">'+r.absent+'</td>';
         html+='<td style="text-align:center;font-weight:700;color:'+(r.late>0?'var(--amber)':'var(--ink3)')+';">'+r.late+'</td>';
-        html+='<td style="text-align:center;">'+(r.arif_status==='حاضر'?'<span style="color:var(--green);">'+r.arif_status+'</span>':'<span style="color:var(--red);font-weight:700;">'+r.arif_status+'</span>')+'</td>';
+        var arifCell=r.arif_status==='حاضر'?'<span style="color:var(--green);">'+r.arif_status+'</span>':'<span style="color:var(--red);font-weight:700;">'+r.arif_status+'</span>'+(r.arif_deputy?' <span style="font-size:10px;color:var(--amber);">(بديل: '+r.arif_deputy+')</span>':'');
+        html+='<td style="text-align:center;">'+arifCell+'</td>';
         html+='<td style="font-size:11px;">'+(r.notes||'—')+'</td>';
         html+='</tr>';
       });
