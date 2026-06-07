@@ -609,8 +609,14 @@ tbody tr:hover{background:var(--surface2);}
   <div class="sh"><div class="sn">٣</div><h2>الفصائل</h2></div>
   <div class="card">
     <div class="g2">
-      <div class="field"><label>اسم الفصيل <span class="req">*</span></label><input type="text" id="nFName" placeholder="الفصيل الأول"></div>
-      <div class="field"><label>اسم العريف</label><input type="text" id="nFArif" placeholder="اسم العريف"></div>
+      <div class="field"><label>اسم الفصيل <span class="req">*</span></label><input type="text" id="nFName" placeholder="الفصيل الأول" oninput="updateArifList()"></div>
+      <div class="field">
+        <label>العريف <span style="font-size:10px;color:var(--ink3);">(اختر من طلبة الفصيل بعد تحديده)</span></label>
+        <select id="nFArif" onchange="onArifChange()">
+          <option value="">— اختر العريف —</option>
+        </select>
+        <div style="font-size:10px;color:var(--ink3);margin-top:3px;">يُعبأ تلقائياً عند اختيار الفصيل أعلاه</div>
+      </div>
     </div>
     <div class="g3">
       <div class="field"><label>السرية</label><input type="text" id="nFSeria"></div>
@@ -1638,9 +1644,59 @@ function addGuardOff(){
   var n=document.getElementById('nGrdName').value.trim(); if(!n){toast('أدخل الاسم','red');return;}
   sbInsert('guard_officers',{name:n,rank:document.getElementById('nGrdRank').value.trim()}).then(function(res){if(Array.isArray(res)&&res[0])C.guards.push(res[0]);['nGrdName','nGrdRank'].forEach(function(id){document.getElementById(id).value='';});fillSelects();renderSetup();toast('تم الإضافة');});
 }
+function updateArifList(){
+  var fname = document.getElementById('nFName') ? document.getElementById('nFName').value.trim() : '';
+  var seria = document.getElementById('nFSeria') ? document.getElementById('nFSeria').value.trim() : '';
+  var arifSel = document.getElementById('nFArif'); if(!arifSel)return;
+  var cur = arifSel.value;
+  arifSel.innerHTML = '<option value="">— اختر العريف —</option>';
+  // filter students by faseel name or seria
+  var matching = C.students.filter(function(s){
+    if(fname && s.faseel === fname) return true;
+    if(seria && s.seria === seria) return true;
+    return false;
+  });
+  if(!matching.length) matching = C.students; // fallback: all students
+  matching.forEach(function(s){
+    var opt = document.createElement('option');
+    opt.value = s.name + '|' + (s.military_number||'');
+    opt.textContent = s.name + (s.military_number ? ' ('+s.military_number+')' : '') + (s.faseel?' — '+s.faseel:'');
+    arifSel.appendChild(opt);
+  });
+  if(cur) arifSel.value = cur;
+}
+
+function onArifChange(){
+  // nothing extra needed
+}
+
+function changeArif(faseelId){
+  var f = C.faseels.find(function(x){return x.id===faseelId;});
+  if(!f){toast('الفصيل غير موجود','red');return;}
+  // Build modal-like prompt
+  var students = C.students.filter(function(s){return s.faseel===f.name;});
+  if(!students.length) students = C.students;
+  var opts = students.map(function(s){return s.name+(s.military_number?' ('+s.military_number+')':'');}).join('\n');
+  var newArif = prompt('اختر اسم العريف الجديد للفصيل: '+f.name+'\n\nالطلبة المتاحون:\n'+opts+'\n\n(اكتب الاسم كما هو)');
+  if(!newArif) return;
+  // Update in supabase
+  fetch(SUPA_URL+'/rest/v1/faseels?id=eq.'+faseelId, {
+    method:'PATCH',
+    headers:getH({'Prefer':'return=representation'}),
+    body:JSON.stringify({arif:newArif})
+  }).then(function(r){return r.ok?r.json():null;}).then(function(){
+    var idx=C.faseels.findIndex(function(x){return x.id===faseelId;});
+    if(idx>=0) C.faseels[idx].arif=newArif;
+    renderSetup(); fillSelects(); toast('تم تغيير العريف');
+  }).catch(function(){toast('خطأ في التحديث','red');});
+}
+
 function addFaseel(){
   var n=document.getElementById('nFName').value.trim(); if(!n){toast('أدخل اسم الفصيل','red');return;}
-  var data={name:n,arif:document.getElementById('nFArif').value.trim(),seria:document.getElementById('nFSeria').value.trim(),idara:document.getElementById('nFIdara').value.trim(),katiba:document.getElementById('nFKatiba').value.trim(),study_year:document.getElementById('nFYear').value,count:parseInt(document.getElementById('nFCnt').value)||40};
+  var arifSel=document.getElementById('nFArif');
+  var arifVal=arifSel?arifSel.value:'';
+  var arifName=arifVal?arifVal.split('|')[0]:document.getElementById('nFArif').value||'';
+  var data={name:n,arif:arifName,seria:document.getElementById('nFSeria').value.trim(),idara:document.getElementById('nFIdara').value.trim(),katiba:document.getElementById('nFKatiba').value.trim(),study_year:document.getElementById('nFYear').value,count:parseInt(document.getElementById('nFCnt').value)||40};
   sbInsert('faseels',data).then(function(res){if(Array.isArray(res)&&res[0])C.faseels.push(res[0]);['nFName','nFArif','nFSeria','nFIdara','nFKatiba','nFCnt'].forEach(function(id){document.getElementById(id).value='';});fillSelects();renderSetup();toast('تم إضافة الفصيل');});
 }
 function delSetup(table,id,key){
@@ -1673,7 +1729,8 @@ function renderList(elId,arr,table,cacheKey,fields){
   if(!arr.length){el.innerHTML='<div style="color:var(--ink3);font-size:13px;padding:10px 0;">لا يوجد</div>';return;}
   el.innerHTML=arr.map(function(x){
     var sub=fields.map(function(f){return x[f]||'';}).filter(Boolean).join(' — ');
-    return '<div style="display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);gap:8px;"><div style="flex:1;font-size:13px;"><strong>'+x.name+'</strong><span style="font-size:11px;color:var(--ink3);margin-right:6px;">'+sub+'</span></div><button class="btn btn-danger btn-sm" onclick="delSetup(\''+table+'\',\''+x.id+'\',\''+cacheKey+'\')">حذف</button></div>';
+    var extra = (table==='faseels') ? '<button class="btn btn-ghost btn-sm" onclick="changeArif(\''+x.id+'\')">تغيير العريف</button>' : '';
+    return '<div style="display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap;"><div style="flex:1;font-size:13px;"><strong>'+x.name+'</strong><span style="font-size:11px;color:var(--ink3);margin-right:6px;">'+sub+'</span></div>'+extra+'<button class="btn btn-danger btn-sm" onclick="delSetup(\''+table+'\',\''+x.id+'\',\''+cacheKey+'\')">حذف</button></div>';
   }).join('');
 }
 
