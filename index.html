@@ -2,8 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>نظام متابعة الفصائل</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>نظام متابعة الفصائل — أكاديمية سعد العبدالله</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&display=swap');
 :root{
@@ -12,160 +13,142 @@
   --ink:#1A2340;--ink2:#4A5470;--ink3:#8A92B0;
   --green:#076A3C;--green-bg:#E8F7F0;--red:#B91C1C;--red-bg:#FAEAEA;
   --amber:#8A5010;--amber-bg:#FDF5E6;--gold:#C9A227;
-  --r:9px;--rlg:14px;--sh:0 1px 3px rgba(28,63,122,.09);--sh2:0 4px 16px rgba(28,63,122,.13);
+  --r:9px;--rlg:14px;--sh:0 1px 4px rgba(28,63,122,.10);--sh2:0 4px 20px rgba(28,63,122,.15);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;min-height:100vh;}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh;}
 
-/* CONFIG SCREEN */
-.config-screen{position:fixed;inset:0;background:var(--royal);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
-.config-box{background:#fff;border-radius:20px;padding:32px 28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-.config-logo{text-align:center;margin-bottom:24px;}
-.config-logo h1{font-size:16px;font-weight:800;color:var(--royal);margin-top:8px;}
-.config-logo p{font-size:12px;color:var(--ink3);margin-top:4px;}
-.config-step{font-size:12px;color:var(--ink3);margin-bottom:6px;font-weight:700;}
-.config-box .field{margin-bottom:14px;}
-.config-box label{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:5px;}
-.config-box input{width:100%;border:1px solid var(--border2);border-radius:var(--r);padding:10px 13px;font-family:inherit;font-size:13px;color:var(--ink);outline:none;}
-.config-box input:focus{border-color:var(--royal3);box-shadow:0 0 0 3px rgba(45,101,194,.12);}
-.config-note{font-size:11px;color:var(--ink3);margin-top:5px;line-height:1.5;}
-.config-err{font-size:12px;color:var(--red);background:var(--red-bg);padding:8px 12px;border-radius:var(--r);margin-bottom:12px;display:none;}
+/* ── LOGIN ── */
+.login-wrap{min-height:100vh;background:linear-gradient(135deg,var(--royal) 0%,var(--royal2) 100%);display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#fff;border-radius:20px;padding:36px 28px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .diamond{font-size:40px;color:var(--royal);}
+.login-logo h1{font-size:17px;font-weight:800;color:var(--royal);margin-top:8px;}
+.login-logo p{font-size:12px;color:var(--ink3);margin-top:3px;}
+.login-box .field{margin-bottom:14px;}
+.login-box label{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:5px;}
+.login-box input{width:100%;border:1.5px solid var(--border2);border-radius:var(--r);padding:11px 13px;font-family:inherit;font-size:14px;color:var(--ink);outline:none;transition:border-color .15s;}
+.login-box input:focus{border-color:var(--royal3);box-shadow:0 0 0 3px rgba(45,101,194,.12);}
+.login-err{font-size:12px;color:var(--red);background:var(--red-bg);padding:9px 12px;border-radius:var(--r);margin-bottom:14px;display:none;text-align:center;}
+.login-note{font-size:11px;color:var(--ink3);text-align:center;margin-top:16px;line-height:1.6;}
 
-/* TOPBAR */
-.topbar{background:var(--royal);padding:0 16px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(28,63,122,.35);}
-.tb-title{font-size:14px;font-weight:800;color:#fff;}
-.tb-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:1px;}
-.tb-date{font-size:11px;color:rgba(255,255,255,.75);background:rgba(255,255,255,.12);padding:5px 11px;border-radius:18px;white-space:nowrap;flex-shrink:0;}
+/* ── TOPBAR ── */
+.topbar{background:var(--royal);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(28,63,122,.3);}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-title{font-size:13px;font-weight:800;color:#fff;}
+.tb-sub{font-size:10px;color:rgba(255,255,255,.6);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-user{font-size:11px;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:5px 10px;border-radius:15px;}
+.tb-role{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--gold);color:#fff;}
+.tb-date{font-size:11px;color:rgba(255,255,255,.7);}
+.btn-logout{background:rgba(255,255,255,.15);border:none;color:#fff;padding:5px 10px;border-radius:8px;font-family:inherit;font-size:11px;cursor:pointer;}
 
-/* CONNECTION STATUS */
-.conn-bar{padding:6px 16px;font-size:11px;font-weight:700;text-align:center;display:none;}
-.conn-bar.online{background:#E8F7F0;color:var(--green);}
-.conn-bar.offline{background:var(--amber-bg);color:var(--amber);}
-.conn-bar.error{background:var(--red-bg);color:var(--red);}
-
-/* TABS */
-.tabs{background:var(--royal2);display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid rgba(255,255,255,.15);position:sticky;top:58px;z-index:90;}
+/* ── TABS ── */
+.tabs{background:var(--royal2);display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid rgba(255,255,255,.15);position:sticky;top:56px;z-index:90;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex-shrink:0;padding:12px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.55);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:all .18s;}
-.tab:hover{color:rgba(255,255,255,.85);}
+.tab{flex-shrink:0;padding:11px 15px;font-size:12px;font-weight:700;color:rgba(255,255,255,.55);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:all .18s;}
 .tab.active{color:#fff;border-bottom-color:#fff;}
 .t-badge{background:rgba(255,255,255,.25);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:800;margin-right:4px;}
 
-/* PAGES */
+/* ── PAGES ── */
 .page{display:none;}.page.active{display:block;}
-.cont{max-width:780px;margin:0 auto;padding:20px 14px 80px;}
+.cont{max-width:820px;margin:0 auto;padding:18px 14px 80px;}
 
-/* SECTION HEAD */
-.sh{display:flex;align-items:center;gap:8px;margin:18px 0 12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.sh h2{font-size:13px;font-weight:700;}
-.sh-note{font-size:11px;color:var(--ink3);margin-right:auto;}
-.sn{min-width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;background:var(--royal);padding:0 5px;}
-
-/* CARD */
+/* ── CARDS ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:16px;margin-bottom:12px;box-shadow:var(--sh);}
 .card-head{font-size:13px;font-weight:700;color:var(--royal);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);border-right:3px solid var(--royal3);padding-right:8px;}
 
-/* FORM */
+/* ── FORM ── */
 .field{margin-bottom:11px;}
-.field:last-child{margin-bottom:0;}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:4px;}
 .req{color:var(--red);}
-.field input,.field select,.field textarea{width:100%;border:1px solid var(--border2);border-radius:var(--r);padding:9px 11px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--surface);outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none;}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border2);border-radius:var(--r);padding:9px 11px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--surface);outline:none;transition:border-color .15s;-webkit-appearance:none;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--royal3);box-shadow:0 0 0 3px rgba(45,101,194,.10);}
-.field textarea{min-height:64px;resize:vertical;}
+.field textarea{min-height:60px;resize:vertical;}
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234A5470'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 10px center;padding-left:28px;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.field-ro input{background:var(--surface2)!important;}
 
-/* INFO BOX */
-.info-box{background:var(--blue-bg);border-radius:var(--r);padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--ink2);display:none;}
-
-/* NUM INPUT */
-.ni{display:flex;align-items:center;gap:4px;}
-.ni input{text-align:center;width:52px;padding:8px 4px;}
-.nb{width:28px;height:28px;border:1px solid var(--border2);border-radius:7px;background:var(--surface2);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;-webkit-tap-highlight-color:transparent;}
-.nb:active{background:var(--border);}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--r);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--r);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;}
 .btn-primary{background:var(--royal);color:#fff;box-shadow:0 2px 8px rgba(28,63,122,.22);}
 .btn-primary:active{opacity:.85;}
 .btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--ink2);}
-.btn-ghost:active{background:var(--surface2);}
 .btn-danger{background:transparent;border:1px solid #F0AAAA;color:var(--red);}
-.btn-danger:active{background:var(--red-bg);}
 .btn-green{background:var(--green);color:#fff;}
-.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:11px;}
 .btn-full{width:100%;}
-.brow{display:flex;gap:8px;margin-top:10px;}
-.brow .btn{flex:1;}
+.brow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 
-/* GTABS */
+/* ── GTABS ── */
 .gtabs{display:flex;background:var(--surface2);border-radius:var(--r);padding:3px;margin-bottom:14px;gap:3px;border:1px solid var(--border);}
-.gtab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;border-radius:6px;transition:all .2s;font-family:inherit;background:none;border:none;}
+.gtab{flex:1;padding:9px;text-align:center;font-size:12px;font-weight:700;color:var(--ink2);cursor:pointer;border-radius:6px;transition:all .2s;font-family:inherit;background:none;border:none;}
 .gtab.active{background:var(--royal);color:#fff;box-shadow:var(--sh);}
 
-/* VIOLATIONS SECTION */
-.vio-section{background:var(--red-bg);border:1px solid #FECACA;border-radius:var(--rlg);padding:16px;margin-top:12px;}
-.vio-section-title{font-size:13px;font-weight:700;color:var(--red);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
-.vio-item{background:#fff;border:1px solid #FECACA;border-radius:var(--r);padding:12px;margin-bottom:10px;position:relative;}
-.vio-item:last-child{margin-bottom:0;}
-.vio-remove{position:absolute;top:8px;left:8px;width:22px;height:22px;background:var(--red);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1;}
+/* ── COUNTER ── */
+.ni{display:flex;align-items:center;gap:4px;}
+.ni input{text-align:center;width:56px;padding:8px 4px;}
+.nb{width:30px;height:30px;border:1px solid var(--border2);border-radius:7px;background:var(--surface2);color:var(--ink);font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;}
+.nb:active{background:var(--border);}
 
-/* TABLE */
+/* ── SECTION HEAD ── */
+.sh{display:flex;align-items:center;gap:8px;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.sh h2{font-size:13px;font-weight:700;}
+.sh-note{font-size:11px;color:var(--ink3);margin-right:auto;}
+.sn{min-width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;background:var(--royal);padding:0 5px;}
+
+/* ── VIOLATION SECTION ── */
+.vio-section{background:var(--red-bg);border:1px solid #FECACA;border-radius:var(--rlg);padding:14px;margin-bottom:10px;}
+.vio-title{font-size:12px;font-weight:700;color:var(--red);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+
+/* ── TABLE ── */
 .tbl-wrap{overflow-x:auto;border-radius:var(--rlg);border:1px solid var(--border);box-shadow:var(--sh);}
 table{width:100%;border-collapse:collapse;background:var(--surface);min-width:500px;}
-thead th{background:var(--royal);color:rgba(255,255,255,.9);padding:10px 12px;text-align:right;font-size:11px;font-weight:700;border-bottom:1px solid var(--border);white-space:nowrap;}
-tbody td{padding:10px 12px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+thead th{background:var(--royal);color:rgba(255,255,255,.9);padding:10px 11px;text-align:right;font-size:11px;font-weight:700;white-space:nowrap;}
+tbody td{padding:9px 11px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tbody tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:var(--surface2);}
 
-/* TAGS */
-.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap;}
+/* ── TAGS ── */
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;}
 .tag-royal{background:var(--blue-bg);color:var(--royal2);}
 .tag-green{background:var(--green-bg);color:var(--green);}
 .tag-red{background:var(--red-bg);color:var(--red);}
 .tag-amber{background:var(--amber-bg);color:var(--amber);}
 .tag-gray{background:var(--surface2);color:var(--ink3);}
 
-/* KPI */
-.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:14px;text-align:center;box-shadow:var(--sh);}
-.kpi-val{font-size:28px;font-weight:800;line-height:1;letter-spacing:-1px;}
-.kpi-lbl{font-size:10px;color:var(--ink3);margin-top:4px;}
-.kpi-royal .kpi-val{color:var(--royal);}
-.kpi-green .kpi-val{color:var(--green);}
-.kpi-red .kpi-val{color:var(--red);}
-.kpi-amber .kpi-val{color:var(--amber);}
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:14px 12px;text-align:center;box-shadow:var(--sh);border-top:3px solid var(--royal);}
+.kpi.green{border-top-color:var(--green);}
+.kpi.red{border-top-color:var(--red);}
+.kpi.amber{border-top-color:var(--amber);}
+.kpi.gold{border-top-color:var(--gold);}
+.kpi-val{font-size:30px;font-weight:800;line-height:1;letter-spacing:-1px;color:var(--royal);}
+.kpi.green .kpi-val{color:var(--green);}
+.kpi.red .kpi-val{color:var(--red);}
+.kpi.amber .kpi-val{color:var(--amber);}
+.kpi.gold .kpi-val{color:var(--gold);}
+.kpi-lbl{font-size:10px;color:var(--ink3);margin-top:4px;line-height:1.3;}
+.kpi-trend{font-size:10px;margin-top:4px;font-weight:700;}
 
-/* ALERT */
-.alert{border-radius:var(--r);padding:10px 13px;font-size:12px;margin-bottom:9px;border:1px solid;display:flex;align-items:flex-start;gap:8px;}
+/* ── CHART WRAPPER ── */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:16px;margin-bottom:12px;box-shadow:var(--sh);}
+.chart-title{font-size:12px;font-weight:700;color:var(--royal);margin-bottom:12px;}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+
+/* ── ALERT ── */
+.alert{border-radius:var(--r);padding:10px 13px;font-size:12px;margin-bottom:8px;border:1px solid;display:flex;align-items:flex-start;gap:8px;}
 .alert-warn{background:var(--amber-bg);border-color:#FDE68A;color:var(--amber);}
 .alert-error{background:var(--red-bg);border-color:#FECACA;color:var(--red);}
 .alert-info{background:var(--blue-bg);border-color:#BFDBFE;color:var(--royal2);}
 .alert-ok{background:var(--green-bg);border-color:#A7F3D0;color:var(--green);}
-.alert-title{font-weight:700;margin-bottom:2px;}
+.alert-title{font-weight:700;}
 
-/* STATUS ROW */
-.st-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.st-row:last-child{border-bottom:none;}
-.st-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.st-dot.ok{background:var(--green);}
-.st-dot.warn{background:#D97706;}
-.st-dot.miss{background:var(--red);}
-.st-dot.none{background:var(--border2);}
-.st-name{font-size:13px;font-weight:700;flex:1;}
-.st-meta{font-size:11px;color:var(--ink3);}
-
-/* LOG */
-.log-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh);}
-.log-type{font-size:11px;font-weight:800;}
-.log-time{font-size:10px;color:var(--ink3);}
-.log-fields{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;font-size:12px;margin-top:9px;}
-.log-field span:first-child{color:var(--ink3);}
-
-/* SEARCH BAR */
+/* ── SEARCH ── */
 .sbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
 .sbar-in{flex:1;min-width:140px;position:relative;}
 .sbar-in input{width:100%;border:1px solid var(--border2);border-radius:var(--r);padding:8px 11px 8px 28px;font-family:inherit;font-size:13px;background:var(--surface);color:var(--ink);outline:none;}
@@ -173,109 +156,132 @@ tbody tr:hover{background:var(--surface2);}
 .sbar select{border:1px solid var(--border2);border-radius:var(--r);padding:8px 22px 8px 9px;font-family:inherit;font-size:12px;background:var(--surface);color:var(--ink);outline:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234A5470'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 6px center;-webkit-appearance:none;}
 .rec-cnt{font-size:12px;color:var(--ink3);white-space:nowrap;}
 
-/* MODAL */
+/* ── DATE RANGE ── */
+.date-range{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.date-range label{font-size:11px;color:var(--ink2);font-weight:700;}
+.date-range input{border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;}
+
+/* ── RECORD CARD ── */
+.rec-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh);}
+.rec-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.rec-card-title{font-size:13px;font-weight:700;color:var(--royal);}
+.rec-card-date{font-size:11px;color:var(--ink3);}
+.rec-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.rec-stat{text-align:center;background:var(--surface2);border-radius:8px;padding:8px 4px;}
+.rec-stat-val{font-size:20px;font-weight:800;line-height:1;}
+.rec-stat-lbl{font-size:10px;color:var(--ink3);margin-top:2px;}
+.rec-stat.green .rec-stat-val{color:var(--green);}
+.rec-stat.red .rec-stat-val{color:var(--red);}
+.rec-stat.amber .rec-stat-val{color:var(--amber);}
+
+/* ── INFO BOX ── */
+.info-box{background:var(--blue-bg);border-radius:var(--r);padding:9px 12px;margin-bottom:10px;font-size:12px;color:var(--ink2);display:none;}
+
+/* ── PRINT ── */
+@media print{
+  .topbar,.tabs,.no-print,.btn{display:none!important;}
+  body{background:#fff;}
+  .page{display:block!important;}
+  #page-login,#page-form,#page-records,#page-setup,#page-dashboard,#page-log,#page-violations,#page-students{display:none!important;}
+  #page-report{display:block!important;}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
+  .print-header{display:block!important;}
+}
+.print-header{display:none;text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid var(--royal);}
+
+/* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(20,40,80,.5);z-index:200;align-items:flex-end;justify-content:center;}
 .overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:18px 18px 0 0;padding:20px 16px 40px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;border-top:2px solid var(--royal3);animation:su .25s ease;position:relative;}
-@keyframes su{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-title{font-size:14px;font-weight:700;color:var(--royal);margin-bottom:16px;}
-.modal-close{position:absolute;top:14px;left:16px;width:26px;height:26px;background:var(--surface2);border:1px solid var(--border);border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:var(--ink2);}
-.exp-opt{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;margin-bottom:8px;}
-.exp-opt:active{background:var(--blue-bg);}
-.exp-title{font-size:13px;font-weight:700;color:var(--royal);}
-.exp-desc{font-size:11px;color:var(--ink3);margin-top:1px;}
+.modal{background:var(--surface);border-radius:18px 18px 0 0;padding:20px 16px 40px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;animation:slideUp .25s ease;position:relative;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-size:14px;font-weight:700;color:var(--royal);margin-bottom:14px;}
+.modal-close{position:absolute;top:14px;left:16px;width:26px;height:26px;background:var(--surface2);border:1px solid var(--border);border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-family:inherit;}
 
-/* TOAST */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(50px);background:var(--royal);color:#fff;padding:10px 20px;border-radius:28px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:var(--sh2);}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(50px);background:var(--royal);color:#fff;padding:10px 22px;border-radius:28px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:var(--sh2);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* EMPTY */
-.empty{text-align:center;padding:48px 20px;color:var(--ink3);}
-.empty p{font-size:13px;}
-
-/* LOADING */
+/* ── LOADING ── */
 .loading{display:flex;align-items:center;justify-content:center;gap:8px;padding:40px;color:var(--ink3);font-size:13px;}
 .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--royal);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+.empty{text-align:center;padding:48px 20px;color:var(--ink3);}
 
-/* PRINT */
-@media print{
-  .topbar,.tabs,.no-print,.conn-bar{display:none!important;}
-  body{background:#fff;}
-  .cont{padding:0 10px;}
-  .page{display:block!important;}
-  #page-form,#page-records,#page-setup,#page-dashboard,#page-log,#page-violations{display:none!important;}
-  #page-stats{display:block!important;}
-  .card{box-shadow:none;border:1px solid #ccc;}
-}
+/* ── STATUS ROW ── */
+.st-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.st-row:last-child{border-bottom:none;}
+.st-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.st-dot.ok{background:var(--green);}
+.st-dot.warn{background:#D97706;}
+.st-dot.miss{background:var(--red);}
+.st-dot.none{background:var(--border2);}
 
-/* DIVIDER */
-.divider{height:1px;background:var(--border);margin:14px 0;}
-
-@media(max-width:500px){
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
   .g2{grid-template-columns:1fr;}
   .g3{grid-template-columns:1fr 1fr;}
   .g4{grid-template-columns:1fr 1fr;}
-  .brow{flex-direction:column;}
   .kpi-grid{grid-template-columns:1fr 1fr;}
+  .charts-grid{grid-template-columns:1fr;}
+  .brow{flex-direction:column;}
+  .rec-stats{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════ CONFIG SCREEN ══════════ -->
-<div class="config-screen" id="configScreen">
-  <div class="config-box">
-    <div class="config-logo">
-      <div style="font-size:32px;color:var(--royal)">&#9670;</div>
+<!-- ════════ LOGIN ════════ -->
+<div id="loginPage">
+<div class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="diamond">&#9670;</div>
       <h1>نظام متابعة الفصائل</h1>
       <p>أكاديمية سعد العبدالله للعلوم الأمنية</p>
     </div>
-    <div class="config-err" id="configErr"></div>
-    <div class="config-step">للبدء، أدخل بيانات Supabase:</div>
+    <div class="login-err" id="loginErr"></div>
     <div class="field">
-      <label>Supabase URL</label>
-      <input type="text" id="cfg_url" placeholder="https://xxxx.supabase.co">
-      <div class="config-note">من لوحة Supabase: Settings > API > Project URL</div>
+      <label>البريد الإلكتروني</label>
+      <input type="email" id="loginEmail" placeholder="example@saad.edu.kw" autocomplete="username">
     </div>
     <div class="field">
-      <label>Supabase Publishable Key</label>
-      <input type="text" id="cfg_key" placeholder="sb_publishable_...">
-      <div class="config-note">من لوحة Supabase: Settings > API Keys > Publishable key</div>
+      <label>كلمة المرور</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="btn btn-primary btn-full" onclick="saveConfig()" id="cfgBtn">الدخول للنظام</button>
-    <div style="text-align:center;margin-top:14px;">
-      <a href="SETUP.md" target="_blank" style="font-size:11px;color:var(--ink3);">كيفية الإعداد؟</a>
+    <button class="btn btn-primary btn-full" onclick="doLogin()" id="loginBtn">دخول</button>
+    <div class="login-note">
+      للتجربة: admin@saad.edu.kw / admin123<br>
+      data@saad.edu.kw / data123<br>
+      officer1@saad.edu.kw / off123
     </div>
   </div>
 </div>
+</div>
 
-<!-- ══════════ TOPBAR ══════════ -->
+<!-- ════════ APP ════════ -->
+<div id="appPage" style="display:none;">
+
 <div class="topbar">
-  <div>
-    <div class="tb-title">أكاديمية سعد العبدالله</div>
-    <div class="tb-sub">قطاع شؤون التعليم والتدريب — إدارة كلية الشرطة</div>
+  <div class="tb-left">
+    <div>
+      <div class="tb-title">أكاديمية سعد العبدالله للعلوم الأمنية</div>
+      <div class="tb-sub">قطاع شؤون التعليم والتدريب — إدارة كلية الشرطة</div>
+    </div>
   </div>
-  <div class="tb-date" id="topDate"></div>
+  <div class="tb-right">
+    <div class="tb-date" id="topDate"></div>
+    <div class="tb-user" id="topUser"></div>
+    <span class="tb-role" id="topRole"></span>
+    <button class="btn-logout" onclick="doLogout()">خروج</button>
+  </div>
 </div>
 
-<div class="conn-bar" id="connBar"></div>
+<div class="tabs" id="mainTabs"></div>
 
-<!-- ══════════ TABS ══════════ -->
-<div class="tabs">
-  <button class="tab active" onclick="goTab('form')">تسجيل يومي</button>
-  <button class="tab" onclick="goTab('records')">السجلات <span class="t-badge" id="recBadge">0</span></button>
-  <button class="tab" onclick="goTab('violations')">الانضباطيات <span class="t-badge" id="vioBadge">0</span></button>
-  <button class="tab" onclick="goTab('stats')">التقرير</button>
-  <button class="tab" onclick="goTab('dashboard')">لوحة المدير</button>
-  <button class="tab" onclick="goTab('log')">السجل</button>
-  <button class="tab" onclick="goTab('setup')">الإعداد</button>
-</div>
-
-<!-- ════ FORM ════ -->
-<div class="page active" id="page-form">
+<!-- تسجيل يومي -->
+<div class="page" id="page-form">
 <div class="cont">
-  <div class="gtabs">
+  <div class="gtabs" id="formGtabs">
     <button class="gtab active" id="gt-f" onclick="switchSec('faseel')">أمر الفصيل</button>
     <button class="gtab" id="gt-g" onclick="switchSec('guard')">ضابط الخفر</button>
   </div>
@@ -293,21 +299,20 @@ tbody tr:hover{background:var(--surface2);}
           <input type="date" id="f_date">
         </div>
       </div>
-      <div class="field">
-        <label>الرتبة</label>
-        <input type="text" id="f_rank" readonly style="background:var(--surface2);">
-      </div>
-    </div>
-
-    <div class="sh"><div class="sn">متابعة الفصيل</div></div>
-    <div class="card">
-      <div class="field">
-        <label>اختر الفصيل <span class="req">*</span></label>
-        <select id="f_faseel_sel" onchange="onFaseelSelect()"><option value="">— اختر —</option></select>
+      <div class="g2">
+        <div class="field field-ro"><label>الرتبة</label><input type="text" id="f_rank" readonly></div>
+        <div class="field">
+          <label>اختر الفصيل <span class="req">*</span></label>
+          <select id="f_faseel_sel" onchange="onFaseelSelect()"><option value="">— اختر —</option></select>
+        </div>
       </div>
       <div class="info-box" id="faseelInfo"></div>
-      <div id="faseelFields" style="display:none;">
-        <div class="g4" style="margin-bottom:10px;">
+    </div>
+
+    <div id="faseelFields" style="display:none;">
+      <div class="sh"><div class="sn">الحضور</div></div>
+      <div class="card">
+        <div class="g3">
           <div class="field">
             <label>الحاضرون</label>
             <div class="ni">
@@ -332,6 +337,8 @@ tbody tr:hover{background:var(--surface2);}
               <button class="nb" onclick="nudge('fp_late',1)">+</button>
             </div>
           </div>
+        </div>
+        <div class="g2">
           <div class="field">
             <label>حالة العريف</label>
             <select id="fp_arif">
@@ -340,28 +347,27 @@ tbody tr:hover{background:var(--surface2);}
               <option value="متأخر">متأخر</option>
             </select>
           </div>
+          <div class="field">
+            <label>ملاحظات عامة</label>
+            <input type="text" id="fp_notes" placeholder="اختياري">
+          </div>
         </div>
+      </div>
+
+      <div class="sh"><div class="sn">انضباطيات</div><span class="sh-note">اختياري</span></div>
+      <div id="fVioContainer"></div>
+      <button class="btn btn-danger btn-sm no-print" onclick="addVio('f')" style="margin-bottom:12px;">+ إضافة مخالف</button>
+
+      <div class="card">
         <div class="field">
-          <label>ملاحظات</label>
-          <input type="text" id="fp_notes" placeholder="اختياري">
+          <label>ملاحظات إضافية</label>
+          <textarea id="f_week_notes" placeholder="اختياري..."></textarea>
         </div>
       </div>
-    </div>
-
-    <!-- الانضباطيات -->
-    <div class="sh"><div class="sn">انضباطيات</div><span class="sh-note">اختياري</span></div>
-    <div id="fVioContainer"></div>
-    <button class="btn btn-danger btn-sm" onclick="addVioItem('f')" style="margin-bottom:14px;">+ إضافة مخالف</button>
-
-    <div class="card">
-      <div class="field">
-        <label>ملاحظات عامة</label>
-        <textarea id="f_notes_general" placeholder="اختياري..."></textarea>
+      <div class="brow no-print">
+        <button class="btn btn-primary" id="fSaveBtn" onclick="saveFaseel()">حفظ التقرير</button>
+        <button class="btn btn-ghost" onclick="clearFaseel()">مسح</button>
       </div>
-    </div>
-    <div class="brow">
-      <button class="btn btn-primary" id="fSaveBtn" onclick="saveFaseel()">حفظ التقرير</button>
-      <button class="btn btn-ghost" onclick="clearFaseel()">مسح</button>
     </div>
   </div>
 
@@ -378,7 +384,14 @@ tbody tr:hover{background:var(--surface2);}
           <input type="date" id="g_date">
         </div>
       </div>
-      <div class="g2">
+      <div class="g3">
+        <div class="field">
+          <label>نوع المناوبة</label>
+          <select id="g_type" onchange="onGuardTypeChange()">
+            <option value="يوم عادي">يوم عادي</option>
+            <option value="ويكند">ويكند</option>
+          </select>
+        </div>
         <div class="field">
           <label>من الساعة</label>
           <input type="time" id="g_from_time">
@@ -388,19 +401,12 @@ tbody tr:hover{background:var(--surface2);}
           <input type="time" id="g_to_time">
         </div>
       </div>
-      <div class="field">
-        <label>نوع المناوبة</label>
-        <select id="g_type">
-          <option value="يوم عادي">يوم عادي</option>
-          <option value="ويكند">ويكند</option>
-        </select>
-      </div>
     </div>
 
     <div class="sh"><div class="sn">تفاصيل الخفارة</div></div>
     <div class="card">
       <div class="g3">
-        <div class="field">
+        <div class="field" id="g_count_wrap">
           <label>عدد الطلبة</label>
           <div class="ni">
             <button class="nb" onclick="nudge('g_count',-1)">-</button>
@@ -408,7 +414,7 @@ tbody tr:hover{background:var(--surface2);}
             <button class="nb" onclick="nudge('g_count',1)">+</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" id="g_detain_wrap">
           <label>المحجوزون</label>
           <div class="ni">
             <button class="nb" onclick="nudge('g_detain',-1)">-</button>
@@ -417,7 +423,7 @@ tbody tr:hover{background:var(--surface2);}
           </div>
         </div>
         <div class="field">
-          <label>الحالات الطبية</label>
+          <label>حالات طبية</label>
           <div class="ni">
             <button class="nb" onclick="nudge('g_med',-1)">-</button>
             <input type="number" id="g_med" value="0" min="0">
@@ -425,18 +431,24 @@ tbody tr:hover{background:var(--surface2);}
           </div>
         </div>
       </div>
-      <div class="field">
+
+      <!-- محجوزو الويكند -->
+      <div id="weekendDetained" style="display:none;">
+        <div style="font-size:12px;font-weight:700;color:var(--amber);margin:10px 0 6px;">الطلبة المحجوزون في هذا الويكند:</div>
+        <div id="detainedList" style="font-size:12px;color:var(--ink2);background:var(--amber-bg);padding:10px;border-radius:8px;"></div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
         <label>ملاحظات</label>
         <textarea id="g_notes" placeholder="اختياري..."></textarea>
       </div>
     </div>
 
-    <!-- الانضباطيات -->
     <div class="sh"><div class="sn">انضباطيات</div><span class="sh-note">اختياري</span></div>
     <div id="gVioContainer"></div>
-    <button class="btn btn-danger btn-sm" onclick="addVioItem('g')" style="margin-bottom:14px;">+ إضافة مخالف</button>
+    <button class="btn btn-danger btn-sm no-print" onclick="addVio('g')" style="margin-bottom:12px;">+ إضافة مخالف</button>
 
-    <div class="brow">
+    <div class="brow no-print">
       <button class="btn btn-primary" id="gSaveBtn" onclick="saveGuard()">حفظ سجل الخفارة</button>
       <button class="btn btn-ghost" onclick="clearGuard()">مسح</button>
     </div>
@@ -444,73 +456,132 @@ tbody tr:hover{background:var(--surface2);}
 </div>
 </div>
 
-<!-- ════ RECORDS ════ -->
+<!-- السجلات -->
 <div class="page" id="page-records">
 <div class="cont">
   <div class="sbar">
     <div class="sbar-in"><span class="si">&#128269;</span><input type="text" id="srchQ" placeholder="بحث..." oninput="renderRecs()"></div>
     <select id="ftType" onchange="renderRecs()">
       <option value="">الكل</option>
-      <option value="faseel">أمر الفصيل</option>
-      <option value="guard">ضابط الخفر</option>
+      <option value="faseel">فصائل</option>
+      <option value="guard">خفارة</option>
     </select>
-    <span class="rec-cnt" id="recCnt">0 سجل</span>
-    <button class="btn btn-ghost btn-sm no-print" onclick="openExp()">تصدير</button>
+    <input type="date" id="ftFrom" onchange="renderRecs()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+    <input type="date" id="ftTo" onchange="renderRecs()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+    <span class="rec-cnt" id="recCnt"></span>
+    <button class="btn btn-ghost btn-sm no-print" onclick="exportRecs()">تصدير Excel</button>
   </div>
   <div id="recsBody"><div class="loading"><div class="spinner"></div>جار التحميل...</div></div>
 </div>
 </div>
 
-<!-- ════ VIOLATIONS ════ -->
+<!-- الانضباطيات -->
 <div class="page" id="page-violations">
 <div class="cont">
   <div class="sbar">
     <div class="sbar-in"><span class="si">&#128269;</span><input type="text" id="vioSrch" placeholder="ابحث باسم المخالف..." oninput="renderViolations()"></div>
-    <span class="rec-cnt" id="vioCnt">0 مخالفة</span>
+    <input type="date" id="vioFrom" onchange="renderViolations()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+    <input type="date" id="vioTo" onchange="renderViolations()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+    <span class="rec-cnt" id="vioCnt"></span>
+    <button class="btn btn-ghost btn-sm" onclick="exportViolations()">تصدير Excel</button>
   </div>
   <div id="vioBody"><div class="loading"><div class="spinner"></div>جار التحميل...</div></div>
 </div>
 </div>
 
-<!-- ════ STATS ════ -->
-<div class="page" id="page-stats">
+<!-- التقرير -->
+<div class="page" id="page-report">
 <div class="cont">
+  <!-- Print Header -->
+  <div class="print-header">
+    <div style="font-size:18px;font-weight:800;color:var(--royal);">أكاديمية سعد العبدالله للعلوم الأمنية</div>
+    <div style="font-size:13px;color:var(--ink2);margin-top:4px;">قطاع شؤون التعليم والتدريب — إدارة كلية الشرطة</div>
+    <div style="font-size:13px;font-weight:700;margin-top:8px;" id="printRptTitle"></div>
+  </div>
+
   <div class="card no-print">
+    <div class="card-head">إعدادات التقرير</div>
     <div class="g2">
-      <div class="field"><label>من تاريخ</label><input type="date" id="r_from" onchange="renderRpt()"></div>
-      <div class="field"><label>إلى تاريخ</label><input type="date" id="r_to" onchange="renderRpt()"></div>
+      <div class="field"><label>من تاريخ</label><input type="date" id="rpt_from"></div>
+      <div class="field"><label>إلى تاريخ</label><input type="date" id="rpt_to"></div>
+    </div>
+    <div class="g2">
+      <div class="field">
+        <label>الفصيل</label>
+        <select id="rpt_faseel"><option value="">الكل</option></select>
+      </div>
+      <div class="field">
+        <label>نوع التقرير</label>
+        <select id="rpt_type">
+          <option value="faseel">تقرير الفصائل</option>
+          <option value="guard">تقرير الخفارة</option>
+          <option value="violations">تقرير الانضباطيات</option>
+          <option value="full">تقرير شامل</option>
+        </select>
+      </div>
     </div>
     <div class="brow">
-      <button class="btn btn-ghost btn-sm" onclick="setThisWeek()">هذا الأسبوع</button>
-      <button class="btn btn-primary" onclick="window.print()">طباعة / PDF</button>
+      <button class="btn btn-primary" onclick="generateReport()">إنشاء التقرير</button>
+      <button class="btn btn-ghost btn-sm" onclick="setThisWeek('rpt_from','rpt_to')">هذا الأسبوع</button>
+      <button class="btn btn-ghost btn-sm" onclick="setThisMonth()">هذا الشهر</button>
+      <button class="btn btn-ghost btn-sm" onclick="window.print()">طباعة</button>
+      <button class="btn btn-gold btn-sm" onclick="exportReport()">تصدير Excel</button>
     </div>
   </div>
-  <div id="rptBody"><div class="empty"><p>حدد نطاق التاريخ لعرض التقرير</p></div></div>
+  <div id="rptBody"><div class="empty"><p>حدد الفترة ونوع التقرير ثم اضغط إنشاء</p></div></div>
 </div>
 </div>
 
-<!-- ════ DASHBOARD ════ -->
+<!-- لوحة المدير -->
 <div class="page" id="page-dashboard">
 <div class="cont">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;" class="no-print">
     <div style="font-size:15px;font-weight:800;color:var(--royal);">لوحة المدير</div>
-    <button class="btn btn-ghost btn-sm" onclick="renderDashboard()">تحديث</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <select id="dash_period" onchange="renderDashboard()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 12px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+        <option value="week">هذا الأسبوع</option>
+        <option value="month">هذا الشهر</option>
+        <option value="year">هذه السنة</option>
+        <option value="custom">مخصص</option>
+      </select>
+      <div id="dash_custom" style="display:none;gap:6px;display:flex;">
+        <input type="date" id="dash_from" onchange="renderDashboard()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+        <input type="date" id="dash_to" onchange="renderDashboard()" style="border:1px solid var(--border2);border-radius:var(--r);padding:7px 10px;font-family:inherit;font-size:12px;background:var(--surface);outline:none;">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="renderDashboard()">تحديث</button>
+      <button class="btn btn-gold btn-sm" onclick="exportDashboard()">تصدير Excel</button>
+      <button class="btn btn-ghost btn-sm" onclick="window.print()">طباعة</button>
+    </div>
   </div>
   <div id="dashBody"><div class="loading"><div class="spinner"></div>جار التحميل...</div></div>
 </div>
 </div>
 
-<!-- ════ LOG ════ -->
-<div class="page" id="page-log">
+<!-- الطلبة -->
+<div class="page" id="page-students">
 <div class="cont">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-    <div style="font-size:15px;font-weight:800;color:var(--royal);">سجل النشاط</div>
+  <div class="sbar">
+    <div class="sbar-in"><span class="si">&#128269;</span><input type="text" id="stdSrch" placeholder="ابحث بالاسم أو الرقم..." oninput="renderStudents()"></div>
+    <select id="stdFaseel" onchange="renderStudents()">
+      <option value="">كل الفصائل</option>
+    </select>
+    <select id="stdYear" onchange="renderStudents()">
+      <option value="">كل السنوات</option>
+      <option value="السنة الأولى">السنة الأولى</option>
+      <option value="السنة الثانية">السنة الثانية</option>
+      <option value="السنة الثالثة">السنة الثالثة</option>
+      <option value="السنة الرابعة">السنة الرابعة</option>
+      <option value="اختصاص">اختصاص</option>
+    </select>
+    <span class="rec-cnt" id="stdCnt"></span>
+    <button class="btn btn-primary btn-sm" onclick="openImportStudents()">رفع Excel</button>
+    <button class="btn btn-ghost btn-sm" onclick="downloadTemplate('students')">نموذج Excel</button>
   </div>
-  <div id="logBody"><div class="loading"><div class="spinner"></div>جار التحميل...</div></div>
+  <div id="stdBody"><div class="loading"><div class="spinner"></div>جار التحميل...</div></div>
 </div>
 </div>
 
-<!-- ════ SETUP ════ -->
+<!-- الإعداد -->
 <div class="page" id="page-setup">
 <div class="cont">
 
@@ -529,7 +600,7 @@ tbody tr:hover{background:var(--surface2);}
   <div class="card">
     <div class="g2">
       <div class="field"><label>الاسم</label><input type="text" id="nGrdName" placeholder="الاسم الكامل"></div>
-      <div class="field"><label>الرتبة / الإدارة</label><input type="text" id="nGrdRank" placeholder="ملازم / إدارة التدريب"></div>
+      <div class="field"><label>الرتبة</label><input type="text" id="nGrdRank" placeholder="ملازم أول"></div>
     </div>
     <button class="btn btn-primary btn-sm" onclick="addGuardOff()">إضافة</button>
     <div id="grdList" style="margin-top:12px;"></div>
@@ -541,454 +612,601 @@ tbody tr:hover{background:var(--surface2);}
       <div class="field"><label>اسم الفصيل <span class="req">*</span></label><input type="text" id="nFName" placeholder="الفصيل الأول"></div>
       <div class="field"><label>اسم العريف</label><input type="text" id="nFArif" placeholder="اسم العريف"></div>
     </div>
-    <div class="g2">
-      <div class="field"><label>السرية</label><input type="text" id="nFSeria" placeholder="السرية الأولى"></div>
-      <div class="field"><label>الإدارة</label><input type="text" id="nFIdara" placeholder="إدارة التدريب"></div>
+    <div class="g3">
+      <div class="field"><label>السرية</label><input type="text" id="nFSeria"></div>
+      <div class="field"><label>الإدارة</label><input type="text" id="nFIdara"></div>
+      <div class="field"><label>السنة الدراسية</label>
+        <select id="nFYear">
+          <option value="السنة الأولى">السنة الأولى</option>
+          <option value="السنة الثانية">السنة الثانية</option>
+          <option value="السنة الثالثة">السنة الثالثة</option>
+          <option value="السنة الرابعة">السنة الرابعة</option>
+          <option value="اختصاص">اختصاص</option>
+        </select>
+      </div>
     </div>
     <div class="g2">
-      <div class="field"><label>الكتيبة</label><input type="text" id="nFKatiba" placeholder="الكتيبة الأولى"></div>
-      <div class="field"><label>عدد الطلبة</label><input type="number" id="nFCnt" placeholder="40" min="1"></div>
+      <div class="field"><label>الكتيبة</label><input type="text" id="nFKatiba"></div>
+      <div class="field"><label>عدد الطلبة</label><input type="number" id="nFCnt" placeholder="40"></div>
     </div>
     <button class="btn btn-ghost btn-sm" style="border-color:var(--green);color:var(--green);" onclick="addFaseel()">إضافة الفصيل</button>
     <div id="fList" style="margin-top:12px;"></div>
   </div>
 
-  <div class="sh"><div class="sn">٤</div><h2>إعدادات الاتصال</h2></div>
+  <div class="sh"><div class="sn">٤</div><h2>المحجوزون — الويكند</h2></div>
   <div class="card">
-    <div class="field"><label>Supabase URL</label><input type="text" id="cfg_url2" readonly style="background:var(--surface2);font-size:12px;"></div>
-    <button class="btn btn-danger btn-sm" onclick="resetConfig()" style="margin-top:8px;">تغيير الاتصال</button>
+    <div style="font-size:12px;color:var(--ink2);margin-bottom:10px;">ارفع ملف Excel للمحجوزين في الويكند القادم</div>
+    <input type="file" id="detentionsFile" accept=".csv" style="display:none;" onchange="importDetentions(this)">
+    <div class="brow">
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('detentionsFile').click()">رفع ملف المحجوزين</button>
+      <button class="btn btn-ghost btn-sm" onclick="downloadTemplate('detentions')">تحميل النموذج</button>
+    </div>
+    <div id="detResult" style="margin-top:8px;font-size:12px;"></div>
+    <div id="detList" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="sh"><div class="sn">٥</div><h2>إدارة المستخدمين</h2></div>
+  <div class="card" id="usersSetupCard">
+    <div id="usersList"><div class="loading"><div class="spinner"></div></div></div>
   </div>
 
 </div>
 </div>
 
-<!-- EXPORT MODAL -->
-<div class="overlay" id="expModal" onclick="closeBg(event)">
+<!-- سجل النشاط -->
+<div class="page" id="page-log">
+<div class="cont">
+  <div style="font-size:15px;font-weight:800;color:var(--royal);margin-bottom:14px;">سجل النشاط</div>
+  <div id="logBody"><div class="loading"><div class="spinner"></div>جار التحميل...</div></div>
+</div>
+</div>
+
+</div><!-- end appPage -->
+
+<!-- Import Modal -->
+<div class="overlay" id="importModal" onclick="closeBg(event,'importModal')">
 <div class="modal">
-  <button class="modal-close" onclick="closeExp()">x</button>
-  <div class="modal-title">تصدير البيانات</div>
-  <div class="exp-opt" onclick="doExport('csv')"><div><div class="exp-title">CSV</div><div class="exp-desc">Google Sheets / Numbers / Excel</div></div></div>
-  <div class="exp-opt" onclick="doExport('excel')"><div><div class="exp-title">Excel (.xls)</div><div class="exp-desc">Microsoft Excel</div></div></div>
-  <div class="exp-opt" onclick="doExport('json')"><div><div class="exp-title">JSON — نسخة كاملة</div><div class="exp-desc">للأرشفة والنقل</div></div></div>
+  <button class="modal-close" onclick="closeModal('importModal')">x</button>
+  <div class="modal-title">استيراد بيانات الطلبة</div>
+  <div style="font-size:12px;color:var(--ink2);margin-bottom:12px;line-height:1.6;">
+    ارفع ملف CSV يحتوي على الأعمدة التالية:<br>
+    <strong>الاسم, الرقم العسكري, الدفعة, نوع الدراسة, السنة الدراسية, الفصيل, السرية, الإدارة, الكتيبة</strong>
+  </div>
+  <input type="file" id="studentsFile" accept=".csv" onchange="importStudents(this)">
+  <div id="importResult" style="margin-top:10px;font-size:12px;"></div>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══ CONFIG ═══
-var SUPA_URL = '', SUPA_KEY = '';
+// ════════════════════════════════════
+// SUPABASE CONFIG
+// ════════════════════════════════════
+var SUPA_URL = 'https://wuxeeyhogzbdrnjxjvoi.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eGVleWhvZ3piZHJuanhqdm9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjY4NjUsImV4cCI6MjA5NjM0Mjg2NX0.JirtGfINXlby3yhMcUSn50pZ51kscQp1AMSEhWMKAxM';
 
-function saveConfig() {
-  var url = document.getElementById('cfg_url').value.trim().replace(/\/$/, '');
-  var key = document.getElementById('cfg_key').value.trim();
-  if (!url || !key) { showCfgErr('يرجى إدخال URL و Key'); return; }
-  if (!url.startsWith('https://')) { showCfgErr('URL يجب أن يبدأ بـ https://'); return; }
-  // Save directly without testing — just enter the system
-  localStorage.setItem('supa_url', url);
-  localStorage.setItem('supa_key', key);
-  SUPA_URL = url; SUPA_KEY = key;
-  document.getElementById('configScreen').style.display = 'none';
-  init();
-}
-
-function showCfgErr(msg) {
-  var el = document.getElementById('configErr');
-  el.textContent = msg; el.style.display = 'block';
-}
-
-function resetConfig() {
-  localStorage.removeItem('supa_url'); localStorage.removeItem('supa_key');
-  location.reload();
-}
-
-// ═══ SUPABASE API ═══
-function getHeaders(extra) {
-  var h = { 'Content-Type': 'application/json' };
-  // Support both legacy (eyJ) and new (sb_publishable) key formats
-  if (SUPA_KEY.indexOf('sb_publishable') === 0 || SUPA_KEY.indexOf('sb_secret') === 0) {
-    h['Authorization'] = 'Bearer ' + SUPA_KEY;
-    h['apikey'] = SUPA_KEY;
-  } else {
-    h['apikey'] = SUPA_KEY;
-    h['Authorization'] = 'Bearer ' + SUPA_KEY;
-  }
-  if (extra) { for (var k in extra) h[k] = extra[k]; }
-  return h;
-}
-
-function sb(table) {
-  return {
-    _table: table,
-    _filters: [],
-    _order: null,
-    _limit: null,
-    select: function(cols) { this._select = cols || '*'; return this; },
-    eq: function(col, val) { this._filters.push(col + '=eq.' + encodeURIComponent(val)); return this; },
-    gte: function(col, val) { this._filters.push(col + '=gte.' + encodeURIComponent(val)); return this; },
-    lte: function(col, val) { this._filters.push(col + '=lte.' + encodeURIComponent(val)); return this; },
-    order: function(col, opts) { this._order = col + (opts && opts.ascending === false ? '.desc' : '.asc'); return this; },
-    limit: function(n) { this._limit = n; return this; },
-    _buildUrl: function() {
-      var url = SUPA_URL + '/rest/v1/' + this._table + '?';
-      url += 'select=' + (this._select || '*');
-      for (var i=0;i<this._filters.length;i++) url += '&' + this._filters[i];
-      if (this._order) url += '&order=' + this._order;
-      if (this._limit) url += '&limit=' + this._limit;
-      return url;
-    },
-    get: function() {
-      var self = this;
-      return fetch(self._buildUrl(), { headers: getHeaders() })
-        .then(function(r) {
-          if (!r.ok) return r.text().then(function(t){ console.error('GET error',r.status,t); return []; });
-          return r.json();
-        });
-    },
-    insert: function(data) {
-      return fetch(SUPA_URL + '/rest/v1/' + this._table, {
-        method: 'POST',
-        headers: getHeaders({'Prefer': 'return=representation'}),
-        body: JSON.stringify(data)
-      }).then(function(r) {
-        if (!r.ok) return r.text().then(function(t){ console.error('INSERT error',r.status,t); return []; });
-        return r.json();
-      });
-    },
-    del: function() {
-      var self = this;
-      var url = SUPA_URL + '/rest/v1/' + self._table + '?';
-      for (var i=0;i<self._filters.length;i++) url += (i?'&':'') + self._filters[i];
-      return fetch(url, { method: 'DELETE', headers: getHeaders() });
-    }
-  };
-}
-
-// In-memory cache
-var CACHE = { officers:[], guards:[], faseels:[], faseel_records:[], guard_records:[], violations:[], logs:[] };
-
-function loadAll() {
-  setConn('loading');
-  var p1 = sb('officers').select('*').order('created_at',{ascending:true}).get().then(function(d){if(Array.isArray(d))CACHE.officers=d;});
-  var p2 = sb('guard_officers').select('*').order('created_at',{ascending:true}).get().then(function(d){if(Array.isArray(d))CACHE.guards=d;});
-  var p3 = sb('faseels').select('*').order('created_at',{ascending:true}).get().then(function(d){if(Array.isArray(d))CACHE.faseels=d;});
-  var p4 = sb('faseel_records').select('*').order('record_date',{ascending:false}).get().then(function(d){if(Array.isArray(d))CACHE.faseel_records=d;});
-  var p5 = sb('guard_records').select('*').order('record_date',{ascending:false}).get().then(function(d){if(Array.isArray(d))CACHE.guard_records=d;});
-  var p6 = sb('violations').select('*').order('created_at',{ascending:false}).get().then(function(d){if(Array.isArray(d))CACHE.violations=d;});
-  var p7 = sb('activity_log').select('*').order('created_at',{ascending:false}).limit(100).get().then(function(d){if(Array.isArray(d))CACHE.logs=d;});
-  return Promise.all([p1,p2,p3,p4,p5,p6,p7]).then(function(){
-    setConn('online'); fillSelects(); updBadges();
-  }).catch(function(){ setConn('error'); });
-}
-
-function setConn(state) {
-  var bar = document.getElementById('connBar');
-  if (state === 'online')  { bar.className='conn-bar online'; bar.textContent='متصل بقاعدة البيانات'; bar.style.display='block'; setTimeout(function(){bar.style.display='none';},3000); }
-  else if (state === 'error') { bar.className='conn-bar error'; bar.textContent='خطأ في الاتصال — يعمل محلياً'; bar.style.display='block'; }
-  else if (state === 'loading') { bar.className='conn-bar offline'; bar.textContent='جار الاتصال...'; bar.style.display='block'; }
-}
-
-// ═══ INIT ═══
-var DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-
-window.onload = function() {
-  // بيانات الاتصال الثابتة — تغيير عند نقل السيرفر
-  var FIXED_URL = 'https://wuxeeyhogzbdrnjxjvoi.supabase.co';
-  var FIXED_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eGVleWhvZ3piZHJuanhqdm9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjY4NjUsImV4cCI6MjA5NjM0Mjg2NX0.JirtGfINXlby3yhMcUSn50pZ51kscQp1AMSEhWMKAxM';
-  SUPA_URL = FIXED_URL; SUPA_KEY = FIXED_KEY;
-  localStorage.setItem('supa_url', FIXED_URL);
-  localStorage.setItem('supa_key', FIXED_KEY);
-  document.getElementById('configScreen').style.display = 'none';
-  init();
+// ════════════════════════════════════
+// USERS (local auth for demo)
+// ════════════════════════════════════
+var DEMO_USERS = {
+  'admin@saad.edu.kw':    { pass:'admin123', name:'المدير العام',           role:'مدير' },
+  'data@saad.edu.kw':     { pass:'data123',  name:'مسؤول إدخال البيانات',   role:'مدخل بيانات' },
+  'officer1@saad.edu.kw': { pass:'off123',   name:'ملازم أول / أحمد العنزي', role:'أمر فصيل' },
+  'guard1@saad.edu.kw':   { pass:'grd123',   name:'ملازم / عبدالله الزهراني','role':'ضابط خفر' }
 };
 
-function init() {
-  var now = new Date();
-  document.getElementById('topDate').textContent = now.toLocaleDateString('ar-KW',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('f_date').valueAsDate = now;
-  document.getElementById('g_date').valueAsDate = now;
-  var cfg2 = document.getElementById('cfg_url2'); if(cfg2) cfg2.value = SUPA_URL;
-  setThisWeek();
+var CUR_USER = null;
+
+var ROLE_TABS = {
+  'مدير':          ['form','records','violations','report','dashboard','students','log','setup'],
+  'مدخل بيانات':  ['students','setup'],
+  'أمر فصيل':     ['form','records','report'],
+  'ضابط خفر':     ['form','records']
+};
+
+var TAB_LABELS = {
+  form:'تسجيل يومي', records:'السجلات', violations:'الانضباطيات',
+  report:'التقارير', dashboard:'لوحة المدير', students:'الطلبة',
+  log:'سجل النشاط', setup:'الإعداد'
+};
+
+// ════════════════════════════════════
+// SUPABASE API
+// ════════════════════════════════════
+function getH(extra){
+  var h={'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY};
+  if(extra)for(var k in extra)h[k]=extra[k];
+  return h;
+}
+function sbGet(table,filters,order,limit){
+  var url=SUPA_URL+'/rest/v1/'+table+'?select=*';
+  if(filters)for(var i=0;i<filters.length;i++)url+='&'+filters[i];
+  if(order)url+='&order='+order;
+  if(limit)url+='&limit='+limit;
+  return fetch(url,{headers:getH()}).then(function(r){return r.ok?r.json():[];});
+}
+function sbInsert(table,data){
+  return fetch(SUPA_URL+'/rest/v1/'+table,{
+    method:'POST',headers:getH({'Prefer':'return=representation'}),body:JSON.stringify(data)
+  }).then(function(r){return r.ok?r.json():[];});
+}
+function sbDelete(table,id){
+  return fetch(SUPA_URL+'/rest/v1/'+table+'?id=eq.'+id,{method:'DELETE',headers:getH()});
+}
+
+// ════════════════════════════════════
+// CACHE
+// ════════════════════════════════════
+var C={officers:[],guards:[],faseels:[],faseel_records:[],guard_records:[],violations:[],students:[],detentions:[],logs:[],app_users:[]};
+
+function loadAll(){
+  return Promise.all([
+    sbGet('officers','','created_at.asc').then(function(d){if(Array.isArray(d))C.officers=d;}),
+    sbGet('guard_officers','','created_at.asc').then(function(d){if(Array.isArray(d))C.guards=d;}),
+    sbGet('faseels','','study_year.asc,seria.asc,name.asc').then(function(d){if(Array.isArray(d))C.faseels=d;}),
+    sbGet('faseel_records','','record_date.desc').then(function(d){if(Array.isArray(d))C.faseel_records=d;}),
+    sbGet('guard_records','','record_date.desc').then(function(d){if(Array.isArray(d))C.guard_records=d;}),
+    sbGet('violations','','created_at.desc').then(function(d){if(Array.isArray(d))C.violations=d;}),
+    sbGet('students','','name.asc').then(function(d){if(Array.isArray(d))C.students=d;}),
+    sbGet('detentions','','detention_from.desc').then(function(d){if(Array.isArray(d))C.detentions=d;}),
+    sbGet('activity_log','','created_at.desc','100').then(function(d){if(Array.isArray(d))C.logs=d;})
+  ]);
+}
+
+// ════════════════════════════════════
+// AUTH
+// ════════════════════════════════════
+function doLogin(){
+  var email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('loginPass').value;
+  var btn=document.getElementById('loginBtn');
+  var err=document.getElementById('loginErr');
+  err.style.display='none';
+  if(!email||!pass){showLoginErr('أدخل الإيميل وكلمة المرور');return;}
+  var u=DEMO_USERS[email];
+  if(!u||u.pass!==pass){showLoginErr('بيانات الدخول غير صحيحة');return;}
+  CUR_USER={email:email,name:u.name,role:u.role};
+  btn.textContent='جار التحميل...'; btn.disabled=true;
   loadAll().then(function(){
-    renderSetup();
-    renderRecs();
-    renderViolations();
-    renderLog();
-    renderDashboard();
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('appPage').style.display='block';
+    initApp();
+    btn.textContent='دخول'; btn.disabled=false;
+  }).catch(function(){
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('appPage').style.display='block';
+    initApp();
+    btn.textContent='دخول'; btn.disabled=false;
   });
 }
 
-// ═══ TABS ═══
-function goTab(n) {
+function showLoginErr(msg){
+  var e=document.getElementById('loginErr'); e.textContent=msg; e.style.display='block';
+}
+
+function doLogout(){
+  CUR_USER=null;
+  document.getElementById('appPage').style.display='none';
+  document.getElementById('loginPage').style.display='block';
+  document.getElementById('loginEmail').value='';
+  document.getElementById('loginPass').value='';
+}
+
+// ════════════════════════════════════
+// INIT APP
+// ════════════════════════════════════
+var DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+var curTab='';
+
+function initApp(){
+  var now=new Date();
+  document.getElementById('topDate').textContent=now.toLocaleDateString('ar-KW',{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('topUser').textContent=CUR_USER.name;
+  document.getElementById('topRole').textContent=CUR_USER.role;
+  document.getElementById('f_date').valueAsDate=now;
+  document.getElementById('g_date').valueAsDate=now;
+  buildTabs();
+  fillSelects();
+  var tabs=ROLE_TABS[CUR_USER.role]||['form'];
+  goTab(tabs[0]);
+  if(tabs.indexOf('dashboard')>=0){setThisWeek('dash_from','dash_to');}
+  setThisWeek('rpt_from','rpt_to');
+}
+
+function buildTabs(){
+  var tabs=ROLE_TABS[CUR_USER.role]||['form'];
+  var html='';
+  tabs.forEach(function(t){ html+='<button class="tab" onclick="goTab(\''+t+'\')">'+TAB_LABELS[t]+'</button>'; });
+  document.getElementById('mainTabs').innerHTML=html;
+}
+
+function goTab(n){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  document.getElementById('page-'+n).classList.add('active');
-  var idx = {form:0,records:1,violations:2,stats:3,dashboard:4,log:5,setup:6}[n];
-  var tabs = document.querySelectorAll('.tab');
+  var pg=document.getElementById('page-'+n); if(pg) pg.classList.add('active');
+  var tabs=document.querySelectorAll('.tab');
+  var labels=ROLE_TABS[CUR_USER.role]||[];
+  var idx=labels.indexOf(n);
   if(tabs[idx]) tabs[idx].classList.add('active');
+  curTab=n;
   if(n==='records')    renderRecs();
   if(n==='violations') renderViolations();
-  if(n==='stats')      renderRpt();
   if(n==='dashboard')  renderDashboard();
   if(n==='log')        renderLog();
   if(n==='setup')      renderSetup();
+  if(n==='students')   renderStudents();
 }
 
-function updBadges() {
-  document.getElementById('recBadge').textContent = CACHE.faseel_records.length + CACHE.guard_records.length;
-  document.getElementById('vioBadge').textContent = CACHE.violations.length;
-}
-
-function switchSec(s) {
-  document.getElementById('sec-faseel').style.display = s==='faseel'?'':'none';
-  document.getElementById('sec-guard').style.display  = s==='guard' ?'':'none';
-  document.getElementById('gt-f').classList.toggle('active', s==='faseel');
-  document.getElementById('gt-g').classList.toggle('active', s==='guard');
-}
-
-// ═══ FILL SELECTS ═══
-function fillSelects() {
-  var offs = CACHE.officers, guards = CACHE.guards, faseels = CACHE.faseels;
-  fillSel('f_officer', offs, function(o){ return (o.rank?o.rank+' ':'')+o.name; }, function(o){ return o.name; });
-  fillSel('g_officer', guards, function(g){ return (g.rank?g.rank+' ':'')+g.name; }, function(g){ return g.name; });
-  var fsel = document.getElementById('f_faseel_sel');
-  if(fsel){
-    var cur = fsel.value;
-    fsel.innerHTML = '<option value="">— اختر —</option>';
-    faseels.forEach(function(f){
-      var o = document.createElement('option');
-      o.value = f.id; o.textContent = f.name + (f.seria?' / '+f.seria:'') + (f.idara?' / '+f.idara:'');
-      fsel.appendChild(o);
+// ════════════════════════════════════
+// FILL SELECTS
+// ════════════════════════════════════
+function fillSelects(){
+  // Officers
+  fillSel('f_officer',C.officers,function(o){return (o.rank?o.rank+' ':'')+o.name;},function(o){return o.name;});
+  fillSel('g_officer',C.guards,function(g){return (g.rank?g.rank+' ':'')+g.name;},function(g){return g.name;});
+  // Faseel selects
+  var fSels=['f_faseel_sel','rpt_faseel','stdFaseel'];
+  fSels.forEach(function(sid){
+    var sel=document.getElementById(sid); if(!sel)return;
+    var cur=sel.value;
+    sel.innerHTML=sid==='f_faseel_sel'?'<option value="">— اختر —</option>':'<option value="">الكل</option>';
+    C.faseels.forEach(function(f){
+      var opt=document.createElement('option');
+      opt.value=f.id;
+      opt.textContent=f.name+(f.seria?' / '+f.seria:'')+(f.study_year?' ('+f.study_year+')':'');
+      sel.appendChild(opt);
     });
-    if(cur) fsel.value = cur;
+    if(cur)sel.value=cur;
+  });
+  // Faseel filter
+  var sf=document.getElementById('stdFaseel'); if(sf){sf.innerHTML='<option value="">كل الفصائل</option>';C.faseels.forEach(function(f){var o=document.createElement('option');o.value=f.id;o.textContent=f.name;sf.appendChild(o);});}
+  // Officer onchange
+  var fOff=document.getElementById('f_officer');
+  if(fOff) fOff.onchange=onOfficerChange;
+}
+
+function fillSel(id,arr,labelFn,valFn){
+  var sel=document.getElementById(id); if(!sel)return;
+  var cur=sel.value;
+  sel.innerHTML='<option value="">اختر...</option>';
+  arr.forEach(function(o){var opt=document.createElement('option');opt.value=valFn(o);opt.textContent=labelFn(o);sel.appendChild(opt);});
+  if(cur)sel.value=cur;
+}
+
+function onOfficerChange(){
+  var v=document.getElementById('f_officer').value;
+  var o=C.officers.find(function(x){return x.name===v;});
+  document.getElementById('f_rank').value=o?o.rank||'':'';
+}
+
+function onFaseelSelect(){
+  var fid=document.getElementById('f_faseel_sel').value;
+  var inf=document.getElementById('faseelInfo');
+  var flds=document.getElementById('faseelFields');
+  if(!fid){inf.style.display='none';flds.style.display='none';return;}
+  var f=C.faseels.find(function(x){return x.id===fid;});
+  if(!f)return;
+  var parts=['العريف: '+(f.arif||'—'),'عدد الطلبة: '+(f.count||'—')];
+  if(f.seria)parts.push('السرية: '+f.seria);
+  if(f.study_year)parts.push(f.study_year);
+  inf.textContent=parts.join('  ·  '); inf.style.display='';
+  flds.style.display='';
+  // Set present to count by default
+  var total=f.count||0;
+  document.getElementById('fp_present').value=total;
+  document.getElementById('fp_absent').value=0;
+  document.getElementById('fp_late').value=0;
+}
+
+function onGuardTypeChange(){
+  var t=document.getElementById('g_type').value;
+  var wd=document.getElementById('weekendDetained');
+  if(t==='ويكند'){
+    wd.style.display='';
+    var today=document.getElementById('g_date').value||iso(new Date());
+    var detained=C.detentions.filter(function(d){return d.detention_from<=today&&d.detention_to>=today;});
+    var dl=document.getElementById('detainedList');
+    if(detained.length){
+      dl.innerHTML=detained.map(function(d){return '<div style="padding:4px 0;border-bottom:1px solid rgba(0,0,0,.08);">'+d.student_name+(d.military_number?' ('+d.military_number+')':'')+(d.faseel?' — '+d.faseel:'')+'</div>';}).join('');
+      document.getElementById('g_detain').value=detained.length;
+    } else {
+      dl.innerHTML='<div style="color:var(--ink3);">لا يوجد محجوزون مسجلون لهذا التاريخ</div>';
+    }
+  } else {
+    wd.style.display='none';
   }
 }
 
-function fillSel(id, arr, labelFn, valFn) {
-  var sel = document.getElementById(id); if(!sel)return;
-  var cur = sel.value;
-  sel.innerHTML = '<option value="">اختر...</option>';
-  arr.forEach(function(o){ var opt=document.createElement('option'); opt.value=valFn(o); opt.textContent=labelFn(o); sel.appendChild(opt); });
-  if(cur) sel.value=cur;
+// ════════════════════════════════════
+// VIOLATIONS (vio items)
+// ════════════════════════════════════
+var fVios=[], gVios=[];
+
+function addVio(prefix){
+  var id=Date.now();
+  var mode=prefix==='f'?'all':'guard';
+  if(prefix==='f') fVios.push({id:id,mode:mode});
+  else gVios.push({id:id,mode:mode});
+  renderVioContainer(prefix);
 }
 
-function onOfficerChange() {
-  var v = document.getElementById('f_officer').value;
-  var o = CACHE.officers.find(function(x){return x.name===v;});
-  document.getElementById('f_rank').value = o ? o.rank||'' : '';
+function removeVio(prefix,id){
+  if(prefix==='f') fVios=fVios.filter(function(x){return x.id!==id;});
+  else gVios=gVios.filter(function(x){return x.id!==id;});
+  renderVioContainer(prefix);
 }
 
-function onFaseelSelect() {
-  var fid = document.getElementById('f_faseel_sel').value;
-  var infoEl = document.getElementById('faseelInfo');
-  var fieldsEl = document.getElementById('faseelFields');
-  if(!fid){ infoEl.style.display='none'; fieldsEl.style.display='none'; return; }
-  var f = CACHE.faseels.find(function(x){return x.id===fid;});
-  if(!f) return;
-  var parts=['العريف: '+(f.arif||'—'),'عدد الطلبة: '+(f.count||'—')];
-  if(f.seria) parts.push('السرية: '+f.seria);
-  if(f.idara) parts.push('الإدارة: '+f.idara);
-  if(f.katiba) parts.push('الكتيبة: '+f.katiba);
-  infoEl.textContent = parts.join('  ·  '); infoEl.style.display='';
-  fieldsEl.style.display='';
-}
-
-// ═══ VIOLATIONS ITEMS ═══
-var fVioItems = [], gVioItems = [];
-
-function addVioItem(prefix) {
-  var id = Date.now();
-  var items = prefix==='f' ? fVioItems : gVioItems;
-  items.push(id);
-  renderVioItems(prefix);
-}
-
-function removeVioItem(prefix, id) {
-  if(prefix==='f') fVioItems = fVioItems.filter(function(x){return x!==id;});
-  else gVioItems = gVioItems.filter(function(x){return x!==id;});
-  renderVioItems(prefix);
-}
-
-function renderVioItems(prefix) {
-  var items = prefix==='f' ? fVioItems : gVioItems;
-  var cont = document.getElementById(prefix+'VioContainer');
-  if(!items.length){ cont.innerHTML=''; return; }
-  var html = '';
-  items.forEach(function(id){
-    html += '<div class="vio-section" id="vi_'+id+'">';
-    html += '<div class="vio-section-title">مخالفة انضباطية <button class="btn btn-danger btn-sm" onclick="removeVioItem(\''+prefix+'\','+id+')">حذف</button></div>';
-    html += '<div class="g2" style="margin-bottom:10px;">';
-    html += '<div class="field"><label>اسم المخالف <span class="req">*</span></label><input type="text" id="vn_'+id+'" placeholder="الاسم الكامل"></div>';
-    html += '<div class="field"><label>نوع المخالفة <span class="req">*</span></label><input type="text" id="vt_'+id+'" placeholder="مثال: تأخر عن الطابور"></div>';
-    html += '</div>';
-    html += '<div class="g2">';
-    html += '<div class="field"><label>نوع العقوبة</label><input type="text" id="vp_'+id+'" placeholder="مثال: إنذار كتابي، حجز ويكند"></div>';
-    html += '<div class="field"><label>مدة العقوبة</label><input type="text" id="vd_'+id+'" placeholder="مثال: أسبوع، يومان"></div>';
-    html += '</div>';
-    html += '<div class="field"><label>ملاحظات</label><input type="text" id="vno_'+id+'" placeholder="اختياري"></div>';
-    html += '</div>';
+function renderVioContainer(prefix){
+  var items=prefix==='f'?fVios:gVios;
+  var cont=document.getElementById(prefix+'VioContainer');
+  if(!items.length){cont.innerHTML='';return;}
+  var faseelId=document.getElementById('f_faseel_sel')?document.getElementById('f_faseel_sel').value:'';
+  var faseelObj=faseelId?C.faseels.find(function(x){return x.id===faseelId;}):null;
+  var html='';
+  items.forEach(function(item){
+    var id=item.id; var mode=item.mode;
+    // Build student options
+    var students=[];
+    if(mode==='all') students=C.students;
+    else {
+      var today=document.getElementById('g_date')?document.getElementById('g_date').value:iso(new Date());
+      var detainedNames=C.detentions.filter(function(d){return d.detention_from<=today&&d.detention_to>=today;}).map(function(d){return d.student_name;});
+      students=C.students.filter(function(s){
+        if(detainedNames.indexOf(s.name)>=0)return true;
+        if(faseelObj&&s.faseel===faseelObj.name)return true;
+        return false;
+      });
+      if(!students.length)students=C.students;
+    }
+    var opts='<option value="">— اختر الطالب —</option>';
+    students.forEach(function(s){opts+='<option value="'+s.name+'|'+(s.military_number||'')+'|'+(s.faseel||'')+'">'+s.name+(s.military_number?' ('+s.military_number+')':'')+(s.faseel?' — '+s.faseel:'')+'</option>';});
+    html+='<div class="vio-section" id="vi_'+id+'">';
+    html+='<div class="vio-title">مخالفة انضباطية <button class="btn btn-danger btn-sm" onclick="removeVio(\''+prefix+'\','+id+')">حذف</button></div>';
+    html+='<div class="g2" style="margin-bottom:10px;">';
+    html+='<div class="field"><label>الطالب المخالف <span class="req">*</span></label><select id="vs_'+id+'" onchange="onVioStudent(this,'+id+')">'+opts+'</select></div>';
+    html+='<div class="field field-ro"><label>الرقم العسكري</label><input type="text" id="vmn_'+id+'" readonly placeholder="تلقائي"></div>';
+    html+='</div>';
+    html+='<div class="field" style="margin-bottom:10px;"><label>نوع المخالفة <span class="req">*</span></label><input type="text" id="vt_'+id+'" placeholder="مثال: تأخر عن الطابور"></div>';
+    html+='<div class="g2">';
+    html+='<div class="field"><label>نوع العقوبة</label><input type="text" id="vp_'+id+'" placeholder="إنذار كتابي / حجز ويكند"></div>';
+    html+='<div class="field"><label>مدة العقوبة</label><input type="text" id="vd_'+id+'" placeholder="أسبوع / يومان"></div>';
+    html+='</div>';
+    html+='<div class="field"><label>ملاحظات</label><input type="text" id="vno_'+id+'" placeholder="اختياري"></div>';
+    html+='</div>';
   });
-  cont.innerHTML = html;
+  cont.innerHTML=html;
 }
 
-function collectVioItems(prefix, reporterId, recordId, recordType, date) {
-  var items = prefix==='f' ? fVioItems : gVioItems;
-  var out = [];
-  items.forEach(function(id){
-    var name = getVal('vn_'+id);
-    var type = getVal('vt_'+id);
-    if(!name||!type) return;
-    out.push({
-      record_id: recordId, record_type: recordType,
-      reporter_name: reporterId, violator_name: name,
-      violation_type: type, punishment_type: getVal('vp_'+id),
-      punishment_duration: getVal('vd_'+id), violation_date: date,
-      notes: getVal('vno_'+id)
-    });
+function onVioStudent(sel,id){
+  var parts=sel.value.split('|');
+  var mn=document.getElementById('vmn_'+id); if(mn) mn.value=parts[1]||'';
+}
+
+function collectVios(prefix,reporter,recordId,recordType,date){
+  var items=prefix==='f'?fVios:gVios; var out=[];
+  items.forEach(function(item){
+    var id=item.id;
+    var sel=document.getElementById('vs_'+id); if(!sel)return;
+    var parts=sel.value.split('|'); var name=parts[0]; var mn=parts[1]||''; var faseel=parts[2]||'';
+    var type=getVal('vt_'+id);
+    if(!name||!type)return;
+    out.push({record_id:recordId,record_type:recordType,reporter_name:reporter,
+      violator_name:name,violator_military:mn,violator_faseel:faseel,
+      violation_type:type,punishment_type:getVal('vp_'+id),
+      punishment_duration:getVal('vd_'+id),violation_date:date,notes:getVal('vno_'+id)});
   });
   return out;
 }
 
-// ═══ SAVE FASEEL ═══
-function saveFaseel() {
-  var officer = getVal('f_officer'), date = getVal('f_date'), fid = getVal('f_faseel_sel');
+// ════════════════════════════════════
+// SAVE FASEEL
+// ════════════════════════════════════
+function saveFaseel(){
+  var officer=getVal('f_officer'),date=getVal('f_date'),fid=getVal('f_faseel_sel');
   if(!officer){toast('اختر أمر الفصيل','red');return;}
   if(!date){toast('حدد التاريخ','red');return;}
   if(!fid){toast('اختر الفصيل','red');return;}
-  var f   = CACHE.faseels.find(function(x){return x.id===fid;});
-  var dt  = new Date(date+'T12:00:00');
-  var btn = document.getElementById('fSaveBtn');
-  btn.textContent='جار الحفظ...'; btn.disabled=true;
-  var rec = {
-    officer_name: officer, officer_rank: getVal('f_rank'),
-    faseel_id: fid, faseel_name: f?f.name:'', arif_name: f?f.arif:'',
-    seria: f?f.seria:'', idara: f?f.idara:'', katiba: f?f.katiba:'', total: f?f.count:0,
-    record_date: date, day_name: DAYS[dt.getDay()],
-    present: getNum('fp_present'), absent: getNum('fp_absent'), late: getNum('fp_late'),
-    arif_status: getVal('fp_arif')||'حاضر', notes: getVal('fp_notes'),
-    week_notes: getVal('f_notes_general')
-  };
-  sb('faseel_records').insert(rec).then(function(res){
-    var inserted = Array.isArray(res) ? res[0] : res;
-    var recordId = inserted ? inserted.id : null;
-    var vios = collectVioItems('f', officer, recordId, 'faseel', date);
-    var vioP = vios.length ? sb('violations').insert(vios) : Promise.resolve([]);
-    return vioP.then(function(vr){
-      if(Array.isArray(vr)) CACHE.violations = vr.concat(CACHE.violations);
-      CACHE.faseel_records.unshift(rec);
-      logToDb('save',{officer:officer,faseel:f?f.name:'',date:date,present:rec.present,absent:rec.absent,late:rec.late,violations:vios.length});
-      updBadges(); toast('تم الحفظ بنجاح'); clearFaseel();
+  var f=C.faseels.find(function(x){return x.id===fid;});
+  var dt=new Date(date+'T12:00:00');
+  var btn=document.getElementById('fSaveBtn'); btn.textContent='جار الحفظ...'; btn.disabled=true;
+  var rec={officer_name:officer,officer_rank:getVal('f_rank'),faseel_id:fid,
+    faseel_name:f?f.name:'',arif_name:f?f.arif:'',seria:f?f.seria:'',idara:f?f.idara:'',
+    total:f?f.count:0,record_date:date,day_name:DAYS[dt.getDay()],
+    present:getNum('fp_present'),absent:getNum('fp_absent'),late:getNum('fp_late'),
+    arif_status:getVal('fp_arif')||'حاضر',notes:getVal('fp_notes'),week_notes:getVal('f_week_notes')};
+  sbInsert('faseel_records',rec).then(function(res){
+    var inserted=Array.isArray(res)?res[0]:res;
+    var rid=inserted?inserted.id:null;
+    C.faseel_records.unshift(inserted||rec);
+    var vios=collectVios('f',officer,rid,'faseel',date);
+    var vp=vios.length?sbInsert('violations',vios):Promise.resolve([]);
+    return vp.then(function(vr){
+      if(Array.isArray(vr)) C.violations=vr.concat(C.violations);
+      logAct('save',{officer:officer,faseel:f?f.name:'',date:date,present:rec.present,absent:rec.absent,violations:vios.length});
+      toast('تم حفظ التقرير'); clearFaseel();
       setTimeout(function(){goTab('records');},700);
     });
-  }).catch(function(e){ toast('خطأ في الحفظ','red'); console.error(e); })
-    .finally(function(){ btn.textContent='حفظ التقرير'; btn.disabled=false; });
+  }).catch(function(){toast('خطأ في الحفظ','red');}).finally(function(){btn.textContent='حفظ التقرير';btn.disabled=false;});
 }
 
-function clearFaseel() {
-  ['f_officer','f_rank','f_notes_general','f_faseel_sel','fp_notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+function clearFaseel(){
+  ['f_officer','f_rank','f_faseel_sel','fp_notes','f_week_notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f_date').valueAsDate=new Date();
   ['fp_present','fp_absent','fp_late'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=0;});
   var fa=document.getElementById('fp_arif');if(fa)fa.value='حاضر';
   document.getElementById('faseelInfo').style.display='none';
   document.getElementById('faseelFields').style.display='none';
-  fVioItems=[]; renderVioItems('f');
+  fVios=[]; renderVioContainer('f');
 }
 
-// ═══ SAVE GUARD ═══
-function saveGuard() {
-  var officer=getVal('g_officer'), date=getVal('g_date');
+// ════════════════════════════════════
+// SAVE GUARD
+// ════════════════════════════════════
+function saveGuard(){
+  var officer=getVal('g_officer'),date=getVal('g_date');
   if(!officer){toast('اختر ضابط الخفر','red');return;}
-  if(!date){toast('حدد تاريخ الخفارة','red');return;}
+  if(!date){toast('حدد التاريخ','red');return;}
   var dt=new Date(date+'T12:00:00');
-  var btn=document.getElementById('gSaveBtn');
-  btn.textContent='جار الحفظ...'; btn.disabled=true;
-  var rec = {
-    officer_name: officer, record_date: date, day_name: DAYS[dt.getDay()],
-    from_time: getVal('g_from_time'), to_time: getVal('g_to_time'),
-    guard_type: getVal('g_type')||'يوم عادي',
-    count: getNum('g_count'), detained: getNum('g_detain'), medical: getNum('g_med'),
-    notes: getVal('g_notes')
-  };
-  sb('guard_records').insert(rec).then(function(res){
-    var inserted = Array.isArray(res)?res[0]:res;
-    var recordId = inserted?inserted.id:null;
-    var vios = collectVioItems('g', officer, recordId, 'guard', date);
-    var vioP = vios.length ? sb('violations').insert(vios) : Promise.resolve([]);
-    return vioP.then(function(vr){
-      if(Array.isArray(vr)) CACHE.violations = vr.concat(CACHE.violations);
-      CACHE.guard_records.unshift(rec);
-      logToDb('save',{officer:officer,type:'خفارة',date:date,count:rec.count,violations:vios.length});
-      updBadges(); toast('تم الحفظ بنجاح'); clearGuard();
+  var btn=document.getElementById('gSaveBtn'); btn.textContent='جار الحفظ...'; btn.disabled=true;
+  var rec={officer_name:officer,record_date:date,day_name:DAYS[dt.getDay()],
+    from_time:getVal('g_from_time'),to_time:getVal('g_to_time'),
+    guard_type:getVal('g_type')||'يوم عادي',count:getNum('g_count'),
+    detained:getNum('g_detain'),medical:getNum('g_med'),notes:getVal('g_notes')};
+  sbInsert('guard_records',rec).then(function(res){
+    var inserted=Array.isArray(res)?res[0]:res;
+    C.guard_records.unshift(inserted||rec);
+    var vios=collectVios('g',officer,inserted?inserted.id:null,'guard',date);
+    var vp=vios.length?sbInsert('violations',vios):Promise.resolve([]);
+    return vp.then(function(vr){
+      if(Array.isArray(vr)) C.violations=vr.concat(C.violations);
+      logAct('save',{officer:officer,type:'خفارة',date:date,count:rec.count,violations:vios.length});
+      toast('تم حفظ سجل الخفارة'); clearGuard();
       setTimeout(function(){goTab('records');},700);
     });
-  }).catch(function(){ toast('خطأ في الحفظ','red'); })
-    .finally(function(){ btn.textContent='حفظ سجل الخفارة'; btn.disabled=false; });
+  }).catch(function(){toast('خطأ في الحفظ','red');}).finally(function(){btn.textContent='حفظ سجل الخفارة';btn.disabled=false;});
 }
 
-function clearGuard() {
+function clearGuard(){
   ['g_officer','g_from_time','g_to_time','g_notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('g_date').valueAsDate=new Date();
   ['g_count','g_detain','g_med'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=0;});
   var gt=document.getElementById('g_type');if(gt)gt.value='يوم عادي';
-  gVioItems=[]; renderVioItems('g');
+  document.getElementById('weekendDetained').style.display='none';
+  gVios=[]; renderVioContainer('g');
 }
 
-// ═══ RENDER RECORDS ═══
-function renderRecs() {
-  var q=(document.getElementById('srchQ')?document.getElementById('srchQ').value:'').toLowerCase();
-  var ft=document.getElementById('ftType')?document.getElementById('ftType').value:'';
+function switchSec(s){
+  document.getElementById('sec-faseel').style.display=s==='faseel'?'':'none';
+  document.getElementById('sec-guard').style.display=s==='guard'?'':'none';
+  document.getElementById('gt-f').classList.toggle('active',s==='faseel');
+  document.getElementById('gt-g').classList.toggle('active',s==='guard');
+}
+
+// ════════════════════════════════════
+// RENDER RECORDS
+// ════════════════════════════════════
+function renderRecs(){
+  var q=(document.getElementById('srchQ').value||'').toLowerCase();
+  var ft=document.getElementById('ftType').value;
+  var from=document.getElementById('ftFrom').value;
+  var to=document.getElementById('ftTo').value;
   var all=[];
-  if(!ft||ft==='faseel') CACHE.faseel_records.forEach(function(r){all.push({r:r,type:'faseel'});});
-  if(!ft||ft==='guard')  CACHE.guard_records.forEach(function(r){all.push({r:r,type:'guard'});});
+  if(!ft||ft==='faseel') C.faseel_records.forEach(function(r){all.push({r:r,type:'faseel'});});
+  if(!ft||ft==='guard')  C.guard_records.forEach(function(r){all.push({r:r,type:'guard'});});
   all.sort(function(a,b){return (b.r.record_date||'')>(a.r.record_date||'')?1:-1;});
   if(q) all=all.filter(function(x){return (x.r.officer_name||'').toLowerCase().indexOf(q)>=0||(x.r.faseel_name||'').toLowerCase().indexOf(q)>=0;});
+  if(from) all=all.filter(function(x){return (x.r.record_date||'')>=from;});
+  if(to)   all=all.filter(function(x){return (x.r.record_date||'')<=to;});
   document.getElementById('recCnt').textContent=all.length+' سجل';
   var body=document.getElementById('recsBody');
   if(!all.length){body.innerHTML='<div class="empty"><p>لا توجد سجلات</p></div>';return;}
-  var html='<div class="tbl-wrap"><table><thead><tr><th>النوع</th><th>المسؤول</th><th>التاريخ</th><th>الملخص</th><th>مخالفات</th><th>حذف</th></tr></thead><tbody>';
+  var html='';
   all.forEach(function(x){
-    var r=x.r, isFaseel=x.type==='faseel';
-    var vios=CACHE.violations.filter(function(v){return v.record_id===r.id;});
-    var summary=isFaseel
-      ?'حضور: <strong style="color:var(--green)">'+r.present+'</strong>  غياب: <strong style="color:var(--red)">'+r.absent+'</strong>  متأخر: '+r.late
-      :'طلبة: '+(r.count||0)+(r.detained>0?' · محجوز: '+r.detained:'')+(r.medical>0?' · طبي: '+r.medical:'');
-    html+='<tr>';
-    html+='<td><span class="tag '+(isFaseel?'tag-royal':'tag-gray')+'">'+(isFaseel?'فصيل':'خفر')+'</span></td>';
-    html+='<td><strong>'+(r.officer_name||'—')+'</strong>'+(isFaseel&&r.faseel_name?'<br><span style="font-size:10px;color:var(--ink3)">'+r.faseel_name+'</span>':'')+'</td>';
-    html+='<td style="white-space:nowrap;font-size:11px;">'+fmtD(r.record_date)+'</td>';
-    html+='<td style="font-size:12px;">'+summary+'</td>';
-    html+='<td>'+(vios.length?'<span class="tag tag-red">'+vios.length+'</span>':'<span style="color:var(--ink3)">—</span>')+'</td>';
-    html+='<td><button class="btn btn-danger btn-sm" onclick="delRec(\''+r.id+'\',\''+x.type+'\')">حذف</button></td>';
-    html+='</tr>';
+    var r=x.r; var isFaseel=x.type==='faseel';
+    var recVios=C.violations.filter(function(v){return v.record_id===r.id;});
+    html+='<div class="rec-card">';
+    html+='<div class="rec-card-head">';
+    html+='<div>';
+    html+='<div class="rec-card-title">'+(isFaseel?r.faseel_name||r.officer_name:r.officer_name)+' <span class="tag '+(isFaseel?'tag-royal':'tag-gray')+'">'+(isFaseel?'فصيل':'خفارة')+'</span></div>';
+    if(isFaseel) html+='<div style="font-size:11px;color:var(--ink3);margin-top:2px;">' +r.officer_name+(r.seria?' — '+r.seria:'')+'</div>';
+    else html+='<div style="font-size:11px;color:var(--ink3);margin-top:2px;">'+(r.guard_type||'')+(r.from_time?' — '+r.from_time+(r.to_time?' الى '+r.to_time:''):'')+'</div>';
+    html+='</div>';
+    html+='<div style="text-align:left;">';
+    html+='<div class="rec-card-date">'+fmtD(r.record_date)+(r.day_name?' — '+r.day_name:'')+'</div>';
+    if(CUR_USER.role==='مدير') html+='<button class="btn btn-danger btn-sm" style="margin-top:6px;" onclick="delRec(\''+r.id+'\',\''+x.type+'\')">حذف</button>';
+    html+='</div>';
+    html+='</div>';
+    if(isFaseel){
+      html+='<div class="rec-stats">';
+      html+='<div class="rec-stat green"><div class="rec-stat-val">'+r.present+'</div><div class="rec-stat-lbl">حاضر</div></div>';
+      html+='<div class="rec-stat red"><div class="rec-stat-val">'+r.absent+'</div><div class="rec-stat-lbl">غائب</div></div>';
+      html+='<div class="rec-stat amber"><div class="rec-stat-val">'+r.late+'</div><div class="rec-stat-lbl">متأخر</div></div>';
+      html+='<div class="rec-stat"><div class="rec-stat-val">'+(r.total||0)+'</div><div class="rec-stat-lbl">الإجمالي</div></div>';
+      html+='</div>';
+      if(r.arif_status&&r.arif_status!=='حاضر') html+='<div style="font-size:12px;color:var(--amber);margin-bottom:6px;">حالة العريف: <strong>'+r.arif_status+'</strong></div>';
+    } else {
+      html+='<div class="rec-stats">';
+      html+='<div class="rec-stat"><div class="rec-stat-val">'+r.count+'</div><div class="rec-stat-lbl">طلبة</div></div>';
+      html+='<div class="rec-stat amber"><div class="rec-stat-val">'+r.detained+'</div><div class="rec-stat-lbl">محجوز</div></div>';
+      html+='<div class="rec-stat red"><div class="rec-stat-val">'+r.medical+'</div><div class="rec-stat-lbl">طبي</div></div>';
+      html+='<div class="rec-stat"><div class="rec-stat-val">—</div><div class="rec-stat-lbl"></div></div>';
+      html+='</div>';
+    }
+    if(r.notes) html+='<div style="font-size:12px;color:var(--ink2);padding:6px 8px;background:var(--surface2);border-radius:6px;margin-bottom:6px;">'+r.notes+'</div>';
+    if(recVios.length){
+      html+='<div style="margin-top:6px;">';
+      html+='<div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px;">مخالفات ('+recVios.length+'):</div>';
+      recVios.forEach(function(v){
+        html+='<div style="font-size:11px;padding:4px 8px;background:var(--red-bg);border-radius:5px;margin-bottom:3px;">';
+        html+='<strong>'+v.violator_name+'</strong> — '+v.violation_type;
+        if(v.punishment_type) html+=' | '+v.punishment_type;
+        html+='</div>';
+      });
+      html+='</div>';
+    }
+    html+='</div>';
   });
-  html+='</tbody></table></div>';
   body.innerHTML=html;
 }
 
-function delRec(id, type) {
+function delRec(id,type){
   if(!confirm('حذف هذا السجل؟'))return;
   var table=type==='faseel'?'faseel_records':'guard_records';
-  sb(table).eq('id',id).del().then(function(){
-    if(type==='faseel') CACHE.faseel_records=CACHE.faseel_records.filter(function(r){return r.id!==id;});
-    else CACHE.guard_records=CACHE.guard_records.filter(function(r){return r.id!==id;});
-    // also remove linked violations
-    CACHE.violations=CACHE.violations.filter(function(v){return v.record_id!==id;});
-    logToDb('delete',{id:id,type:type});
-    updBadges(); renderRecs(); renderViolations(); toast('تم الحذف');
+  sbDelete(table,id).then(function(){
+    if(type==='faseel') C.faseel_records=C.faseel_records.filter(function(r){return r.id!==id;});
+    else C.guard_records=C.guard_records.filter(function(r){return r.id!==id;});
+    C.violations=C.violations.filter(function(v){return v.record_id!==id;});
+    logAct('delete',{id:id,type:type});
+    renderRecs(); toast('تم الحذف');
   });
 }
 
-// ═══ RENDER VIOLATIONS ═══
-function renderViolations() {
-  var q=(document.getElementById('vioSrch')?document.getElementById('vioSrch').value:'').toLowerCase();
-  var all=CACHE.violations.filter(function(v){return !q||(v.violator_name||'').toLowerCase().indexOf(q)>=0;});
+function exportRecs(){
+  var q=(document.getElementById('srchQ').value||'').toLowerCase();
+  var ft=document.getElementById('ftType').value;
+  var from=document.getElementById('ftFrom').value;
+  var to=document.getElementById('ftTo').value;
+  var rows=[['النوع','المسؤول','الفصيل','التاريخ','اليوم','حاضر','غائب','متأخر','طلبة','محجوز','طبي','ملاحظات']];
+  C.faseel_records.forEach(function(r){
+    if(ft==='guard')return;
+    if(q&&(r.officer_name||'').toLowerCase().indexOf(q)<0&&(r.faseel_name||'').toLowerCase().indexOf(q)<0)return;
+    if(from&&r.record_date<from)return;
+    if(to&&r.record_date>to)return;
+    rows.push(['فصيل',r.officer_name,r.faseel_name,r.record_date,r.day_name,r.present,r.absent,r.late,'','','',r.notes||'']);
+  });
+  C.guard_records.forEach(function(r){
+    if(ft==='faseel')return;
+    if(q&&(r.officer_name||'').toLowerCase().indexOf(q)<0)return;
+    if(from&&r.record_date<from)return;
+    if(to&&r.record_date>to)return;
+    rows.push(['خفارة',r.officer_name,'',r.record_date,r.day_name,'','','',r.count,r.detained,r.medical,r.notes||'']);
+  });
+  exportToExcel(rows,'سجلات_'+iso(new Date()));
+}
+
+// ════════════════════════════════════
+// VIOLATIONS
+// ════════════════════════════════════
+function renderViolations(){
+  var q=(document.getElementById('vioSrch').value||'').toLowerCase();
+  var from=document.getElementById('vioFrom').value;
+  var to=document.getElementById('vioTo').value;
+  var all=C.violations.filter(function(v){
+    if(q&&(v.violator_name||'').toLowerCase().indexOf(q)<0)return false;
+    if(from&&v.violation_date<from)return false;
+    if(to&&v.violation_date>to)return false;
+    return true;
+  });
   document.getElementById('vioCnt').textContent=all.length+' مخالفة';
   var body=document.getElementById('vioBody');
-  if(!all.length){body.innerHTML='<div class="empty"><p>لا توجد مخالفات انضباطية مسجلة</p></div>';return;}
-  var html='<div class="tbl-wrap"><table><thead><tr><th>المخالف</th><th>نوع المخالفة</th><th>العقوبة</th><th>المدة</th><th>المسجِّل</th><th>التاريخ</th><th>ملاحظات</th></tr></thead><tbody>';
-  all.forEach(function(v,i){
+  if(!all.length){body.innerHTML='<div class="empty"><p>لا توجد مخالفات في هذه الفترة</p></div>';return;}
+  var html='<div class="tbl-wrap"><table><thead><tr><th>المخالف</th><th>الرقم العسكري</th><th>الفصيل</th><th>نوع المخالفة</th><th>العقوبة</th><th>المدة</th><th>المسجِّل</th><th>التاريخ</th><th>ملاحظات</th></tr></thead><tbody>';
+  all.forEach(function(v){
     html+='<tr>';
     html+='<td><strong>'+v.violator_name+'</strong></td>';
+    html+='<td>'+(v.violator_military||'—')+'</td>';
+    html+='<td><span class="tag tag-royal">'+(v.violator_faseel||'—')+'</span></td>';
     html+='<td>'+v.violation_type+'</td>';
     html+='<td>'+(v.punishment_type||'—')+'</td>';
     html+='<td>'+(v.punishment_duration||'—')+'</td>';
@@ -1001,247 +1219,522 @@ function renderViolations() {
   body.innerHTML=html;
 }
 
-// ═══ REPORT ═══
-function setThisWeek(){
-  var t=new Date(), sun=new Date(t); sun.setDate(t.getDate()-t.getDay());
-  var thu=new Date(sun); thu.setDate(sun.getDate()+4);
-  document.getElementById('r_from').value=iso(sun);
-  document.getElementById('r_to').value=iso(thu);
+function exportViolations(){
+  var rows=[['المخالف','الرقم العسكري','الفصيل','نوع المخالفة','العقوبة','المدة','المسجِّل','التاريخ','ملاحظات']];
+  C.violations.forEach(function(v){
+    rows.push([v.violator_name,v.violator_military||'',v.violator_faseel||'',v.violation_type,v.punishment_type||'',v.punishment_duration||'',v.reporter_name,v.violation_date,v.notes||'']);
+  });
+  exportToExcel(rows,'انضباطيات_'+iso(new Date()));
 }
 
-function renderRpt(){
-  var from=document.getElementById('r_from').value, to=document.getElementById('r_to').value;
-  if(!from||!to){document.getElementById('rptBody').innerHTML='<div class="empty"><p>حدد نطاق التاريخ</p></div>';return;}
-  var fRecs=CACHE.faseel_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;});
-  var gRecs=CACHE.guard_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;});
-  var vios=CACHE.violations.filter(function(v){return v.violation_date>=from&&v.violation_date<=to;});
+// ════════════════════════════════════
+// REPORTS
+// ════════════════════════════════════
+function setThisWeek(fid,tid){
+  var t=new Date(),sun=new Date(t); sun.setDate(t.getDate()-t.getDay());
+  var thu=new Date(sun); thu.setDate(sun.getDate()+4);
+  var fe=document.getElementById(fid||'rpt_from'); if(fe)fe.value=iso(sun);
+  var te=document.getElementById(tid||'rpt_to');   if(te)te.value=iso(thu);
+}
+
+function setThisMonth(){
+  var t=new Date();
+  document.getElementById('rpt_from').value=iso(new Date(t.getFullYear(),t.getMonth(),1));
+  document.getElementById('rpt_to').value=iso(new Date(t.getFullYear(),t.getMonth()+1,0));
+}
+
+function generateReport(){
+  var from=document.getElementById('rpt_from').value;
+  var to=document.getElementById('rpt_to').value;
+  var fid=document.getElementById('rpt_faseel').value;
+  var type=document.getElementById('rpt_type').value;
+  if(!from||!to){toast('حدد الفترة','red');return;}
+  var fRecs=C.faseel_records.filter(function(r){
+    return r.record_date>=from&&r.record_date<=to&&(!fid||r.faseel_id===fid);
+  });
+  var gRecs=C.guard_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;});
+  var vios=C.violations.filter(function(v){return v.violation_date>=from&&v.violation_date<=to;});
   var html='';
-  html+='<div style="background:var(--royal);color:#fff;border-radius:var(--rlg);padding:14px 18px;margin-bottom:14px;">';
-  html+='<div style="font-size:14px;font-weight:800;">التقرير — '+fmtD(from)+' إلى '+fmtD(to)+'</div></div>';
+  var title='تقرير الفترة: '+fmtD(from)+' — '+fmtD(to);
+  document.getElementById('printRptTitle').textContent=title;
+  html+='<div class="card" style="background:var(--royal);color:#fff;margin-bottom:14px;">';
+  html+='<div style="font-size:14px;font-weight:800;">'+title+'</div></div>';
 
-  if(fRecs.length){
-    html+='<div class="card" style="margin-bottom:14px;"><div class="card-head">متابعة الفصائل</div>';
-    html+='<div class="tbl-wrap"><table><thead><tr><th>المسؤول</th><th>الفصيل</th><th>التاريخ</th><th>حاضر</th><th>غائب</th><th>متأخر</th><th>العريف</th><th>ملاحظات</th></tr></thead><tbody>';
-    fRecs.forEach(function(r){
-      html+='<tr><td>'+r.officer_name+'</td><td>'+r.faseel_name+'</td><td style="white-space:nowrap;font-size:11px;">'+fmtD(r.record_date)+'</td>';
-      html+='<td style="text-align:center;color:var(--green);font-weight:700;">'+r.present+'</td>';
-      html+='<td style="text-align:center;font-weight:700;color:'+(r.absent>0?'var(--red)':'var(--ink3)')+';">'+r.absent+'</td>';
-      html+='<td style="text-align:center;font-weight:700;color:'+(r.late>0?'var(--amber)':'var(--ink3)')+';">'+r.late+'</td>';
-      html+='<td style="text-align:center;">'+(r.arif_status!=='حاضر'?'<span style="color:var(--red);font-weight:700;">'+r.arif_status+'</span>':r.arif_status)+'</td>';
-      html+='<td style="font-size:11px;">'+(r.notes||'—')+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
+  if(type==='faseel'||type==='full'){
+    if(fRecs.length){
+      var totalP=fRecs.reduce(function(a,r){return a+(r.present||0);},0);
+      var totalA=fRecs.reduce(function(a,r){return a+(r.absent||0);},0);
+      var totalL=fRecs.reduce(function(a,r){return a+(r.late||0);},0);
+      html+='<div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">';
+      html+='<div class="kpi green"><div class="kpi-val">'+totalP+'</div><div class="kpi-lbl">إجمالي الحضور</div></div>';
+      html+='<div class="kpi red"><div class="kpi-val">'+totalA+'</div><div class="kpi-lbl">إجمالي الغياب</div></div>';
+      html+='<div class="kpi amber"><div class="kpi-val">'+totalL+'</div><div class="kpi-lbl">إجمالي التأخير</div></div>';
+      html+='</div>';
+      html+='<div class="card"><div class="card-head">تفاصيل سجلات الفصائل</div>';
+      html+='<div class="tbl-wrap"><table><thead><tr><th>التاريخ</th><th>اليوم</th><th>أمر الفصيل</th><th>الفصيل</th><th>السرية</th><th>حاضر</th><th>غائب</th><th>متأخر</th><th>العريف</th><th>ملاحظات</th></tr></thead><tbody>';
+      fRecs.forEach(function(r){
+        html+='<tr>';
+        html+='<td style="white-space:nowrap;">'+fmtD(r.record_date)+'</td>';
+        html+='<td>'+(r.day_name||'')+'</td>';
+        html+='<td>'+r.officer_name+'</td>';
+        html+='<td><strong>'+r.faseel_name+'</strong></td>';
+        html+='<td>'+(r.seria||'—')+'</td>';
+        html+='<td style="text-align:center;color:var(--green);font-weight:700;">'+r.present+'</td>';
+        html+='<td style="text-align:center;font-weight:700;color:'+(r.absent>0?'var(--red)':'var(--ink3)')+';">'+r.absent+'</td>';
+        html+='<td style="text-align:center;font-weight:700;color:'+(r.late>0?'var(--amber)':'var(--ink3)')+';">'+r.late+'</td>';
+        html+='<td style="text-align:center;">'+(r.arif_status==='حاضر'?'<span style="color:var(--green);">'+r.arif_status+'</span>':'<span style="color:var(--red);font-weight:700;">'+r.arif_status+'</span>')+'</td>';
+        html+='<td style="font-size:11px;">'+(r.notes||'—')+'</td>';
+        html+='</tr>';
+      });
+      html+='</tbody></table></div></div>';
+    } else html+='<div class="alert alert-info"><div>لا توجد سجلات فصائل في هذه الفترة</div></div>';
   }
 
-  if(gRecs.length){
-    html+='<div class="card" style="margin-bottom:14px;"><div class="card-head">سجلات الخفارة</div>';
-    html+='<div class="tbl-wrap"><table><thead><tr><th>الضابط</th><th>التاريخ</th><th>النوع</th><th>الوقت</th><th>طلبة</th><th>محجوز</th><th>طبي</th><th>ملاحظات</th></tr></thead><tbody>';
-    gRecs.forEach(function(r){
-      html+='<tr><td>'+r.officer_name+'</td><td style="font-size:11px;white-space:nowrap;">'+fmtD(r.record_date)+'</td>';
-      html+='<td><span class="tag tag-royal">'+r.guard_type+'</span></td>';
-      html+='<td style="font-size:11px;">'+(r.from_time||'—')+(r.to_time?' — '+r.to_time:'')+'</td>';
-      html+='<td style="text-align:center;">'+r.count+'</td>';
-      html+='<td style="text-align:center;color:'+(r.detained>0?'var(--amber)':'var(--ink3)')+';">'+r.detained+'</td>';
-      html+='<td style="text-align:center;color:'+(r.medical>0?'var(--red)':'var(--ink3)')+';">'+r.medical+'</td>';
-      html+='<td style="font-size:11px;">'+(r.notes||'—')+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
+  if(type==='guard'||type==='full'){
+    if(gRecs.length){
+      html+='<div class="card"><div class="card-head">سجلات الخفارة</div>';
+      html+='<div class="tbl-wrap"><table><thead><tr><th>التاريخ</th><th>اليوم</th><th>الضابط</th><th>النوع</th><th>الوقت</th><th>طلبة</th><th>محجوز</th><th>طبي</th><th>ملاحظات</th></tr></thead><tbody>';
+      gRecs.forEach(function(r){
+        html+='<tr><td style="white-space:nowrap;">'+fmtD(r.record_date)+'</td><td>'+(r.day_name||'')+'</td><td>'+r.officer_name+'</td>';
+        html+='<td><span class="tag tag-royal">'+(r.guard_type||'')+'</span></td>';
+        html+='<td style="font-size:11px;">'+(r.from_time||'—')+(r.to_time?' — '+r.to_time:'')+'</td>';
+        html+='<td style="text-align:center;">'+r.count+'</td>';
+        html+='<td style="text-align:center;color:'+(r.detained>0?'var(--amber)':'var(--ink3)')+';">'+r.detained+'</td>';
+        html+='<td style="text-align:center;color:'+(r.medical>0?'var(--red)':'var(--ink3)')+';">'+r.medical+'</td>';
+        html+='<td style="font-size:11px;">'+(r.notes||'—')+'</td></tr>';
+      });
+      html+='</tbody></table></div></div>';
+    }
   }
 
-  if(vios.length){
-    html+='<div class="card"><div class="card-head" style="color:var(--red);">الانضباطيات ('+vios.length+')</div>';
-    html+='<div class="tbl-wrap"><table><thead><tr><th>المخالف</th><th>المخالفة</th><th>العقوبة</th><th>المدة</th><th>المسجِّل</th><th>التاريخ</th></tr></thead><tbody>';
-    vios.forEach(function(v){
-      html+='<tr><td><strong>'+v.violator_name+'</strong></td><td>'+v.violation_type+'</td>';
-      html+='<td>'+(v.punishment_type||'—')+'</td><td>'+(v.punishment_duration||'—')+'</td>';
-      html+='<td style="font-size:11px;">'+v.reporter_name+'</td><td style="font-size:11px;white-space:nowrap;">'+fmtD(v.violation_date)+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
+  if(type==='violations'||type==='full'){
+    if(vios.length){
+      html+='<div class="card"><div class="card-head" style="color:var(--red);">الانضباطيات ('+vios.length+')</div>';
+      html+='<div class="tbl-wrap"><table><thead><tr><th>المخالف</th><th>الرقم</th><th>الفصيل</th><th>المخالفة</th><th>العقوبة</th><th>المدة</th><th>التاريخ</th></tr></thead><tbody>';
+      vios.forEach(function(v){
+        html+='<tr><td><strong>'+v.violator_name+'</strong></td><td>'+(v.violator_military||'—')+'</td>';
+        html+='<td>'+(v.violator_faseel||'—')+'</td><td>'+v.violation_type+'</td>';
+        html+='<td>'+(v.punishment_type||'—')+'</td><td>'+(v.punishment_duration||'—')+'</td>';
+        html+='<td style="white-space:nowrap;">'+fmtD(v.violation_date)+'</td></tr>';
+      });
+      html+='</tbody></table></div></div>';
+    }
   }
-  if(!fRecs.length&&!gRecs.length) html='<div class="empty"><p>لا توجد سجلات في هذه الفترة</p></div>';
   document.getElementById('rptBody').innerHTML=html;
 }
 
-// ═══ DASHBOARD ═══
+function exportReport(){
+  var from=document.getElementById('rpt_from').value;
+  var to=document.getElementById('rpt_to').value;
+  var rows=[['النوع','المسؤول','الفصيل','التاريخ','اليوم','حاضر','غائب','متأخر','ملاحظات']];
+  C.faseel_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;}).forEach(function(r){
+    rows.push(['فصيل',r.officer_name,r.faseel_name,r.record_date,r.day_name,r.present,r.absent,r.late,r.notes||'']);
+  });
+  C.guard_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;}).forEach(function(r){
+    rows.push(['خفارة',r.officer_name,'',r.record_date,r.day_name,r.count,r.detained,r.medical,r.notes||'']);
+  });
+  exportToExcel(rows,'تقرير_'+from+'_'+to);
+}
+
+// ════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════
+var chartInstances={};
+
+function getDashRange(){
+  var period=document.getElementById('dash_period').value;
+  var now=new Date();
+  var from,to=iso(now);
+  if(period==='week'){
+    var sun=new Date(now); sun.setDate(now.getDate()-now.getDay());
+    from=iso(sun);
+  } else if(period==='month'){
+    from=iso(new Date(now.getFullYear(),now.getMonth(),1));
+    to=iso(new Date(now.getFullYear(),now.getMonth()+1,0));
+  } else if(period==='year'){
+    from=now.getFullYear()+'-01-01';
+    to=now.getFullYear()+'-12-31';
+  } else {
+    from=document.getElementById('dash_from').value||iso(now);
+    to=document.getElementById('dash_to').value||iso(now);
+  }
+  return {from:from,to:to};
+}
+
 function renderDashboard(){
-  var now=new Date(), sun=new Date(now); sun.setDate(now.getDate()-now.getDay());
-  var thu=new Date(sun); thu.setDate(sun.getDate()+4);
-  var wFrom=iso(sun), wTo=iso(thu);
-  var wFRecs=CACHE.faseel_records.filter(function(r){return r.record_date>=wFrom&&r.record_date<=wTo;});
-  var wGRecs=CACHE.guard_records.filter(function(r){return r.record_date>=wFrom&&r.record_date<=wTo;});
-  var wVios=CACHE.violations.filter(function(v){return v.violation_date>=wFrom&&v.violation_date<=wTo;});
-  var totalP=wFRecs.reduce(function(a,r){return a+(r.present||0);},0);
-  var totalA=wFRecs.reduce(function(a,r){return a+(r.absent||0);},0);
+  var period=document.getElementById('dash_period').value;
+  var dCustom=document.getElementById('dash_custom');
+  if(dCustom) dCustom.style.display=period==='custom'?'flex':'none';
+  var range=getDashRange();
+  var from=range.from, to=range.to;
+  var fRecs=C.faseel_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;});
+  var gRecs=C.guard_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;});
+  var vios=C.violations.filter(function(v){return v.violation_date>=from&&v.violation_date<=to;});
+
+  var totalP=fRecs.reduce(function(a,r){return a+(r.present||0);},0);
+  var totalA=fRecs.reduce(function(a,r){return a+(r.absent||0);},0);
+  var totalL=fRecs.reduce(function(a,r){return a+(r.late||0);},0);
+  var totalRecs=fRecs.length+gRecs.length;
+  var attendRate=totalP+totalA>0?Math.round(totalP/(totalP+totalA)*100):0;
+
+  // Destroy old charts
+  for(var k in chartInstances){try{chartInstances[k].destroy();}catch(e){}}
+  chartInstances={};
+
   var html='';
-  html+='<div class="kpi-grid">';
-  html+='<div class="kpi kpi-green"><div class="kpi-val">'+totalP+'</div><div class="kpi-lbl">إجمالي الحضور — هذا الأسبوع</div></div>';
-  html+='<div class="kpi kpi-red"><div class="kpi-val">'+totalA+'</div><div class="kpi-lbl">إجمالي الغياب — هذا الأسبوع</div></div>';
-  html+='<div class="kpi kpi-amber"><div class="kpi-val">'+wVios.length+'</div><div class="kpi-lbl">مخالفات — هذا الأسبوع</div></div>';
-  html+='<div class="kpi kpi-royal"><div class="kpi-val">'+(CACHE.faseel_records.length+CACHE.guard_records.length)+'</div><div class="kpi-lbl">إجمالي السجلات</div></div>';
-  html+='</div>';
 
   // Alerts
   var alerts=[];
-  CACHE.faseels.forEach(function(f){
-    var lastRec=CACHE.faseel_records.find(function(r){return r.faseel_id===f.id;});
-    if(!lastRec){ alerts.push({type:'error',title:'لا يوجد تسجيل — '+f.name,msg:'لم يُسجَّل هذا الفصيل حتى الآن.'}); return; }
-    var diff=Math.floor((now-new Date(lastRec.record_date+'T12:00:00'))/86400000);
-    if(diff>=2) alerts.push({type:'warn',title:'تحذير — '+f.name,msg:'آخر تسجيل منذ '+diff+' أيام ('+fmtD(lastRec.record_date)+')'});
+  C.faseels.forEach(function(f){
+    var last=C.faseel_records.filter(function(r){return r.faseel_id===f.id;}).sort(function(a,b){return b.record_date>a.record_date?1:-1;})[0];
+    if(!last){ alerts.push({type:'error',msg:'لم يُسجَّل الفصيل: '+f.name}); return; }
+    var diff=Math.floor((new Date()-new Date(last.record_date+'T12:00:00'))/86400000);
+    if(diff>=2) alerts.push({type:'warn',msg:f.name+': آخر تسجيل منذ '+diff+' أيام'});
   });
-  if(!wGRecs.length&&CACHE.guard_records.length===0) alerts.push({type:'info',title:'الخفارة',msg:'لم يُسجَّل أي سجل خفارة بعد.'});
   if(alerts.length){
-    alerts.forEach(function(a){
-      html+='<div class="alert alert-'+a.type+'"><div><div class="alert-title">'+a.title+'</div>'+a.msg+'</div></div>';
+    html+='<div style="margin-bottom:14px;">';
+    alerts.slice(0,5).forEach(function(a){
+      html+='<div class="alert alert-'+a.type+'"><div>'+a.msg+'</div></div>';
     });
+    if(alerts.length>5) html+='<div style="font-size:12px;color:var(--ink3);text-align:center;">و '+(alerts.length-5)+' تنبيهات أخرى</div>';
+    html+='</div>';
   } else {
-    html+='<div class="alert alert-ok"><div class="alert-title">كل شيء منتظم</div>لا توجد تنبيهات.</div>';
+    html+='<div class="alert alert-ok"><div class="alert-title">كل شيء منتظم — لا توجد تنبيهات</div></div>';
   }
 
-  // Faseel status
-  html+='<div class="card" style="margin-bottom:12px;"><div class="card-head">حالة الفصائل — هذا الأسبوع</div>';
-  CACHE.faseels.forEach(function(f){
-    var wRec=wFRecs.find(function(r){return r.faseel_id===f.id;});
-    var dot=wRec?'ok':'none', statusText=wRec?'مسجل هذا الأسبوع':'لا يوجد تسجيل';
-    html+='<div class="st-row"><div class="st-dot '+dot+'"></div><div style="flex:1;"><div class="st-name">'+f.name+'</div><div class="st-meta">العريف: '+f.arif+(wRec?' — حضور: '+wRec.present+' غياب: '+wRec.absent:'')+'</div></div>';
-    html+='<span class="tag '+(wRec?'tag-green':'tag-gray')+'">'+statusText+'</span></div>';
-  });
+  // KPIs
+  html+='<div class="kpi-grid">';
+  html+='<div class="kpi green"><div class="kpi-val">'+totalP+'</div><div class="kpi-lbl">إجمالي الحضور</div></div>';
+  html+='<div class="kpi red"><div class="kpi-val">'+totalA+'</div><div class="kpi-lbl">إجمالي الغياب</div></div>';
+  html+='<div class="kpi amber"><div class="kpi-val">'+vios.length+'</div><div class="kpi-lbl">المخالفات</div></div>';
+  html+='<div class="kpi gold"><div class="kpi-val">'+attendRate+'%</div><div class="kpi-lbl">نسبة الحضور</div></div>';
   html+='</div>';
 
-  // Violations this week
-  if(wVios.length){
-    html+='<div class="card"><div class="card-head" style="color:var(--red);">مخالفات هذا الأسبوع</div>';
-    wVios.forEach(function(v){
-      html+='<div style="padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;">';
-      html+='<strong style="color:var(--red);">'+v.violator_name+'</strong> — '+v.violation_type;
-      if(v.punishment_type) html+=' | العقوبة: '+v.punishment_type;
-      html+='<div style="color:var(--ink3);font-size:11px;">'+v.reporter_name+' · '+fmtD(v.violation_date)+'</div></div>';
+  // Charts row
+  html+='<div class="charts-grid">';
+  html+='<div class="chart-wrap"><div class="chart-title">الحضور والغياب</div><canvas id="chartAttend" height="180"></canvas></div>';
+  html+='<div class="chart-wrap"><div class="chart-title">المخالفات حسب الفصيل</div><canvas id="chartVio" height="180"></canvas></div>';
+  html+='</div>';
+
+  // Faseel status table
+  html+='<div class="card"><div class="card-head">حالة الفصائل</div>';
+  html+='<div class="tbl-wrap"><table><thead><tr><th>الفصيل</th><th>السرية</th><th>السنة</th><th>الحضور</th><th>الغياب</th><th>التأخير</th><th>المخالفات</th><th>آخر تسجيل</th><th>الحالة</th></tr></thead><tbody>';
+  C.faseels.forEach(function(f){
+    var recs=fRecs.filter(function(r){return r.faseel_id===f.id;});
+    var p=recs.reduce(function(a,r){return a+(r.present||0);},0);
+    var a=recs.reduce(function(a,r){return a+(r.absent||0);},0);
+    var l=recs.reduce(function(a,r){return a+(r.late||0);},0);
+    var fv=vios.filter(function(v){return recs.some(function(r){return r.id===v.record_id;});}).length;
+    var lastRec=C.faseel_records.filter(function(r){return r.faseel_id===f.id;}).sort(function(a,b){return b.record_date>a.record_date?1:-1;})[0];
+    var diff=lastRec?Math.floor((new Date()-new Date(lastRec.record_date+'T12:00:00'))/86400000):999;
+    var statusCls=diff===0?'tag-green':diff<=2?'tag-amber':'tag-red';
+    var statusTxt=diff===0?'اليوم':diff<=2?'منذ '+diff+' أيام':'لا يوجد';
+    html+='<tr>';
+    html+='<td><strong>'+f.name+'</strong></td>';
+    html+='<td style="font-size:11px;">'+(f.seria||'—')+'</td>';
+    html+='<td style="font-size:11px;">'+(f.study_year||'—')+'</td>';
+    html+='<td style="text-align:center;color:var(--green);font-weight:700;">'+p+'</td>';
+    html+='<td style="text-align:center;font-weight:700;color:'+(a>0?'var(--red)':'var(--ink3)')+';">'+a+'</td>';
+    html+='<td style="text-align:center;font-weight:700;color:'+(l>0?'var(--amber)':'var(--ink3)')+';">'+l+'</td>';
+    html+='<td style="text-align:center;">'+(fv>0?'<span class="tag tag-red">'+fv+'</span>':'—')+'</td>';
+    html+='<td style="font-size:11px;">'+(lastRec?fmtD(lastRec.record_date):'—')+'</td>';
+    html+='<td><span class="tag '+statusCls+'">'+statusTxt+'</span></td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table></div></div>';
+
+  // Latest violations
+  if(vios.length){
+    html+='<div class="card"><div class="card-head" style="color:var(--red);">أحدث المخالفات</div>';
+    vios.slice(0,10).forEach(function(v){
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">';
+      html+='<strong style="flex:1;">'+v.violator_name+'</strong>';
+      html+='<span>'+v.violation_type+'</span>';
+      if(v.punishment_type) html+='<span class="tag tag-amber">'+v.punishment_type+'</span>';
+      html+='<span style="color:var(--ink3);white-space:nowrap;">'+fmtD(v.violation_date)+'</span>';
+      html+='</div>';
     });
     html+='</div>';
   }
 
   document.getElementById('dashBody').innerHTML=html;
+
+  // Render charts
+  setTimeout(function(){
+    // Attendance chart
+    var ctx1=document.getElementById('chartAttend');
+    if(ctx1){
+      var labels=[];var pData=[];var aData=[];
+      var grouped={};
+      fRecs.forEach(function(r){
+        var d=r.record_date;
+        if(!grouped[d]) grouped[d]={p:0,a:0};
+        grouped[d].p+=(r.present||0); grouped[d].a+=(r.absent||0);
+      });
+      var days=Object.keys(grouped).sort();
+      days.forEach(function(d){labels.push(fmtDShort(d));pData.push(grouped[d].p);aData.push(grouped[d].a);});
+      if(labels.length){
+        chartInstances.attend=new Chart(ctx1,{type:'bar',data:{labels:labels,datasets:[
+          {label:'حاضر',data:pData,backgroundColor:'rgba(7,106,60,.7)',borderRadius:4},
+          {label:'غائب',data:aData,backgroundColor:'rgba(185,28,28,.7)',borderRadius:4}
+        ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{ticks:{font:{family:'IBM Plex Sans Arabic'}}},y:{beginAtZero:true}}}});
+      }
+    }
+    // Violations chart
+    var ctx2=document.getElementById('chartVio');
+    if(ctx2&&vios.length){
+      var vioByFaseel={};
+      vios.forEach(function(v){var f=v.violator_faseel||'غير محدد';vioByFaseel[f]=(vioByFaseel[f]||0)+1;});
+      var vLabels=Object.keys(vioByFaseel);
+      var vData=vLabels.map(function(k){return vioByFaseel[k];});
+      chartInstances.vio=new Chart(ctx2,{type:'doughnut',data:{labels:vLabels,datasets:[{data:vData,backgroundColor:['#1C3F7A','#B91C1C','#8A5010','#076A3C','#24529E','#C9A227'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+    }
+  },100);
 }
 
-// ═══ LOG ═══
-function logToDb(type, details) {
-  sb('activity_log').insert({action_type:type, description:JSON.stringify(details), details:details}).then(function(res){
-    if(Array.isArray(res)&&res[0]) CACHE.logs.unshift(res[0]);
+function exportDashboard(){
+  var range=getDashRange();
+  var from=range.from, to=range.to;
+  var fRecs=C.faseel_records.filter(function(r){return r.record_date>=from&&r.record_date<=to;});
+  var rows=[['الفصيل','السرية','السنة الدراسية','إجمالي الحضور','إجمالي الغياب','إجمالي التأخير','المخالفات','آخر تسجيل']];
+  C.faseels.forEach(function(f){
+    var recs=fRecs.filter(function(r){return r.faseel_id===f.id;});
+    var p=recs.reduce(function(a,r){return a+(r.present||0);},0);
+    var a=recs.reduce(function(a,r){return a+(r.absent||0);},0);
+    var l=recs.reduce(function(a,r){return a+(r.late||0);},0);
+    var lastRec=C.faseel_records.filter(function(r){return r.faseel_id===f.id;}).sort(function(a,b){return b.record_date>a.record_date?1:-1;})[0];
+    rows.push([f.name,f.seria||'',f.study_year||'',p,a,l,0,lastRec?lastRec.record_date:'—']);
   });
+  exportToExcel(rows,'لوحة_المدير_'+from+'_'+to);
 }
 
-function renderLog(){
-  var body=document.getElementById('logBody');
-  if(!CACHE.logs.length){body.innerHTML='<div class="empty"><p>لا توجد سجلات نشاط</p></div>';return;}
-  var typeColors={'save':'var(--green)','delete':'var(--red)','export':'var(--amber)'};
-  var typeNames={'save':'حفظ','delete':'حذف','export':'تصدير'};
-  var html='';
-  CACHE.logs.forEach(function(l){
-    var dt=new Date(l.created_at);
-    var details=l.details||{};
-    if(typeof details==='string'){try{details=JSON.parse(details);}catch(e){details={};}}
-    var color=typeColors[l.action_type]||'var(--royal)';
-    html+='<div class="log-card">';
-    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
-    html+='<span class="log-type" style="color:'+color+';">'+( typeNames[l.action_type]||l.action_type)+'</span>';
-    html+='<span class="log-time">'+dt.toLocaleDateString('ar-KW',{year:'numeric',month:'short',day:'numeric'})+' — '+dt.toLocaleTimeString('ar-KW',{hour:'2-digit',minute:'2-digit'})+'</span></div>';
-    html+='<div class="log-fields">';
-    if(details.officer) html+='<div><span>المسؤول: </span><span style="color:var(--ink);">'+details.officer+'</span></div>';
-    if(details.faseel)  html+='<div><span>الفصيل: </span><span>'+details.faseel+'</span></div>';
-    if(details.date)    html+='<div><span>التاريخ: </span><span>'+fmtD(details.date)+'</span></div>';
-    if(details.present!==undefined) html+='<div><span>حضور: </span><span style="color:var(--green);font-weight:700;">'+details.present+'</span></div>';
-    if(details.absent!==undefined)  html+='<div><span>غياب: </span><span style="color:var(--red);font-weight:700;">'+details.absent+'</span></div>';
-    if(details.violations>0) html+='<div><span>مخالفات: </span><span style="color:var(--red);font-weight:700;">'+details.violations+'</span></div>';
-    if(details.type)    html+='<div><span>النوع: </span><span>'+details.type+'</span></div>';
-    if(details.count)   html+='<div><span>طلبة: </span><span>'+details.count+'</span></div>';
-    html+='</div></div>';
+// ════════════════════════════════════
+// STUDENTS
+// ════════════════════════════════════
+function renderStudents(){
+  var q=(document.getElementById('stdSrch').value||'').toLowerCase();
+  var fid=document.getElementById('stdFaseel').value;
+  var yr=document.getElementById('stdYear').value;
+  var all=C.students.filter(function(s){
+    if(q&&(s.name||'').toLowerCase().indexOf(q)<0&&(s.military_number||'').indexOf(q)<0)return false;
+    if(fid&&s.faseel_id!==fid&&s.faseel!==C.faseels.find(function(f){return f.id===fid;})?.name)return false;
+    if(yr&&s.study_year!==yr)return false;
+    return true;
   });
-  document.getElementById('logBody').innerHTML=html;
+  document.getElementById('stdCnt').textContent=all.length+' طالب';
+  var body=document.getElementById('stdBody');
+  if(!all.length){body.innerHTML='<div class="empty"><p>لا توجد بيانات طلبة. ارفع ملف Excel للبدء.</p></div>';return;}
+  var html='<div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>الرقم العسكري</th><th>الدفعة</th><th>نوع الدراسة</th><th>السنة</th><th>الفصيل</th><th>السرية</th></tr></thead><tbody>';
+  all.forEach(function(s){
+    html+='<tr>';
+    html+='<td><strong>'+s.name+'</strong></td>';
+    html+='<td>'+(s.military_number||'—')+'</td>';
+    html+='<td>'+(s.batch||'—')+'</td>';
+    html+='<td><span class="tag '+(s.study_type==='طالب ضابط اختصاص'?'tag-amber':'tag-royal')+'">'+s.study_type+'</span></td>';
+    html+='<td>'+(s.study_year||'—')+'</td>';
+    html+='<td>'+(s.faseel||'—')+'</td>';
+    html+='<td style="font-size:11px;">'+(s.seria||'—')+'</td>';
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  body.innerHTML=html;
 }
 
-// ═══ SETUP ═══
+function openImportStudents(){ openModal('importModal'); }
+
+function importStudents(input){
+  var file=input.files[0]; if(!file)return;
+  var res=document.getElementById('importResult');
+  res.innerHTML='<div style="color:var(--ink3);">جار المعالجة...</div>';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var text=e.target.result;
+    var lines=text.split('\n');
+    var headers=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});
+    var students=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;
+      var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
+      var obj={};
+      headers.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var name=obj['الاسم']||obj['name']||'';
+      if(!name)continue;
+      // find faseel_id
+      var fName=obj['الفصيل']||obj['faseel']||'';
+      var fObj=C.faseels.find(function(f){return f.name===fName;});
+      students.push({
+        name:name, military_number:obj['الرقم العسكري']||obj['military_number']||'',
+        batch:obj['الدفعة']||obj['batch']||'', study_type:obj['نوع الدراسة']||obj['study_type']||'طالب ضابط',
+        study_year:obj['السنة الدراسية']||obj['study_year']||'', faseel_id:fObj?fObj.id:null,
+        faseel:fName, seria:obj['السرية']||obj['seria']||'',
+        idara:obj['الإدارة']||obj['idara']||'', katiba:obj['الكتيبة']||obj['katiba']||''
+      });
+    }
+    if(!students.length){res.innerHTML='<div style="color:var(--red);">لم يتم العثور على بيانات صحيحة</div>';return;}
+    sbInsert('students',students).then(function(ins){
+      if(Array.isArray(ins))C.students=C.students.concat(ins);
+      res.innerHTML='<div style="color:var(--green);">تم استيراد '+students.length+' طالب</div>';
+      renderStudents(); closeModal('importModal');
+      toast('تم استيراد '+students.length+' طالب');
+    }).catch(function(){res.innerHTML='<div style="color:var(--red);">خطأ في الحفظ</div>';});
+  };
+  reader.readAsText(file,'UTF-8');
+  input.value='';
+}
+
+function importDetentions(input){
+  var file=input.files[0]; if(!file)return;
+  var res=document.getElementById('detResult');
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var text=e.target.result;
+    var lines=text.split('\n');
+    var headers=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});
+    var rows=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;
+      var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
+      var obj={};headers.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var name=obj['الاسم']||obj['name']||''; var from=obj['تاريخ البداية']||obj['detention_from']||'';
+      if(!name||!from)continue;
+      rows.push({student_name:name,military_number:obj['الرقم العسكري']||'',faseel:obj['الفصيل']||'',
+        detention_from:from,detention_to:obj['تاريخ النهاية']||from,reason:obj['السبب']||''});
+    }
+    if(!rows.length){res.innerHTML='<span style="color:var(--red);">لا توجد بيانات صحيحة</span>';return;}
+    sbInsert('detentions',rows).then(function(ins){
+      if(Array.isArray(ins))C.detentions=C.detentions.concat(ins);
+      res.innerHTML='<span style="color:var(--green);">تم استيراد '+rows.length+' محجوز</span>';
+      renderSetup(); toast('تم الاستيراد');
+    }).catch(function(){res.innerHTML='<span style="color:var(--red);">خطأ في الحفظ</span>';});
+  };
+  reader.readAsText(file,'UTF-8');
+  input.value='';
+}
+
+function downloadTemplate(type){
+  var bom='\uFEFF';
+  var csv='';
+  if(type==='students'){
+    csv='الاسم,الرقم العسكري,الدفعة,نوع الدراسة,السنة الدراسية,الفصيل,السرية,الإدارة,الكتيبة\n';
+    csv+='أحمد محمد الكويتي,10001,40,طالب ضابط,السنة الأولى,الفصيل الأول,السرية الأولى,إدارة التدريب الميداني,الكتيبة الأولى\n';
+    csv+='خالد سعد العنزي,10002,27,طالب ضابط اختصاص,اختصاص,الفصيل الخامس,السرية الثانية,إدارة التدريب الميداني,الكتيبة الأولى\n';
+    dlFile(bom+csv,'نموذج_الطلبة.csv','text/csv;charset=utf-8');
+  } else {
+    csv='الاسم,الرقم العسكري,الفصيل,تاريخ البداية,تاريخ النهاية,السبب\n';
+    csv+='أحمد محمد الكويتي,10001,الفصيل الأول,2026-06-07,2026-06-09,مخالفة انضباطية\n';
+    dlFile(bom+csv,'نموذج_المحجوزين.csv','text/csv;charset=utf-8');
+  }
+}
+
+// ════════════════════════════════════
+// SETUP
+// ════════════════════════════════════
 function addOfficer(){
-  var n=document.getElementById('nOffName').value.trim(),r=document.getElementById('nOffRank').value.trim(),f=document.getElementById('nOffF').value.trim();
-  if(!n){toast('أدخل الاسم','red');return;}
-  sb('officers').insert({name:n,rank:r,faseel:f}).then(function(res){
-    if(Array.isArray(res)&&res[0]) CACHE.officers.push(res[0]);
-    document.getElementById('nOffName').value=''; document.getElementById('nOffRank').value=''; document.getElementById('nOffF').value='';
-    fillSelects(); renderSetup(); toast('تم الإضافة');
-  });
+  var n=document.getElementById('nOffName').value.trim(); if(!n){toast('أدخل الاسم','red');return;}
+  var data={name:n,rank:document.getElementById('nOffRank').value.trim(),faseel:document.getElementById('nOffF').value.trim()};
+  sbInsert('officers',data).then(function(res){if(Array.isArray(res)&&res[0])C.officers.push(res[0]);['nOffName','nOffRank','nOffF'].forEach(function(id){document.getElementById(id).value='';});fillSelects();renderSetup();toast('تم الإضافة');});
 }
 function addGuardOff(){
-  var n=document.getElementById('nGrdName').value.trim(),r=document.getElementById('nGrdRank').value.trim();
-  if(!n){toast('أدخل الاسم','red');return;}
-  sb('guard_officers').insert({name:n,rank:r}).then(function(res){
-    if(Array.isArray(res)&&res[0]) CACHE.guards.push(res[0]);
-    document.getElementById('nGrdName').value=''; document.getElementById('nGrdRank').value='';
-    fillSelects(); renderSetup(); toast('تم الإضافة');
-  });
+  var n=document.getElementById('nGrdName').value.trim(); if(!n){toast('أدخل الاسم','red');return;}
+  sbInsert('guard_officers',{name:n,rank:document.getElementById('nGrdRank').value.trim()}).then(function(res){if(Array.isArray(res)&&res[0])C.guards.push(res[0]);['nGrdName','nGrdRank'].forEach(function(id){document.getElementById(id).value='';});fillSelects();renderSetup();toast('تم الإضافة');});
 }
 function addFaseel(){
-  var n=document.getElementById('nFName').value.trim();
-  if(!n){toast('أدخل اسم الفصيل','red');return;}
-  var data={name:n,arif:document.getElementById('nFArif').value.trim(),seria:document.getElementById('nFSeria').value.trim(),
-    idara:document.getElementById('nFIdara').value.trim(),katiba:document.getElementById('nFKatiba').value.trim(),
-    count:parseInt(document.getElementById('nFCnt').value)||40};
-  sb('faseels').insert(data).then(function(res){
-    if(Array.isArray(res)&&res[0]) CACHE.faseels.push(res[0]);
-    ['nFName','nFArif','nFSeria','nFIdara','nFKatiba','nFCnt'].forEach(function(id){document.getElementById(id).value='';});
-    fillSelects(); renderSetup(); toast('تم إضافة الفصيل');
-  });
+  var n=document.getElementById('nFName').value.trim(); if(!n){toast('أدخل اسم الفصيل','red');return;}
+  var data={name:n,arif:document.getElementById('nFArif').value.trim(),seria:document.getElementById('nFSeria').value.trim(),idara:document.getElementById('nFIdara').value.trim(),katiba:document.getElementById('nFKatiba').value.trim(),study_year:document.getElementById('nFYear').value,count:parseInt(document.getElementById('nFCnt').value)||40};
+  sbInsert('faseels',data).then(function(res){if(Array.isArray(res)&&res[0])C.faseels.push(res[0]);['nFName','nFArif','nFSeria','nFIdara','nFKatiba','nFCnt'].forEach(function(id){document.getElementById(id).value='';});fillSelects();renderSetup();toast('تم إضافة الفصيل');});
 }
-function delSetup(table, id, cacheKey){
+function delSetup(table,id,key){
   if(!confirm('حذف؟'))return;
-  sb(table).eq('id',id).del().then(function(){
-    CACHE[cacheKey]=CACHE[cacheKey].filter(function(x){return x.id!==id;});
-    fillSelects(); renderSetup(); toast('تم الحذف');
-  });
+  sbDelete(table,id).then(function(){C[key]=C[key].filter(function(x){return x.id!==id;});fillSelects();renderSetup();toast('تم الحذف');});
 }
+
 function renderSetup(){
-  renderList('offList', CACHE.officers, 'officers', 'officers', ['name','rank','faseel']);
-  renderList('grdList', CACHE.guards, 'guard_officers', 'guards', ['name','rank']);
-  renderList('fList', CACHE.faseels, 'faseels', 'faseels', ['name','arif','seria','idara']);
-  var cfg2=document.getElementById('cfg_url2'); if(cfg2) cfg2.value=SUPA_URL;
+  renderList('offList',C.officers,'officers','officers',['rank','faseel']);
+  renderList('grdList',C.guards,'guard_officers','guards',['rank']);
+  renderList('fList',C.faseels,'faseels','faseels',['seria','study_year','arif']);
+  // Detentions
+  var dl=document.getElementById('detList');
+  if(dl){
+    if(!C.detentions.length){dl.innerHTML='<div style="color:var(--ink3);font-size:12px;padding:8px 0;">لا يوجد محجوزون مسجلون</div>';}
+    else{var h='';C.detentions.forEach(function(d){h+='<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;"><strong style="flex:1;">'+d.student_name+'</strong><span style="color:var(--ink3);">'+d.faseel+'</span><span style="color:var(--amber);">'+fmtD(d.detention_from)+' — '+fmtD(d.detention_to)+'</span></div>';});dl.innerHTML=h;}
+  }
+  // Users
+  var ul=document.getElementById('usersList');
+  if(ul&&CUR_USER.role==='مدير'){
+    var h='<div class="tbl-wrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الصلاحية</th></tr></thead><tbody>';
+    Object.keys(DEMO_USERS).forEach(function(email){var u=DEMO_USERS[email];h+='<tr><td>'+u.name+'</td><td style="font-size:11px;">'+email+'</td><td><span class="tag tag-royal">'+u.role+'</span></td></tr>';});
+    h+='</tbody></table></div>';
+    ul.innerHTML=h;
+  }
 }
-function renderList(elId, arr, table, cacheKey, fields){
+
+function renderList(elId,arr,table,cacheKey,fields){
   var el=document.getElementById(elId); if(!el)return;
   if(!arr.length){el.innerHTML='<div style="color:var(--ink3);font-size:13px;padding:10px 0;">لا يوجد</div>';return;}
   el.innerHTML=arr.map(function(x){
     var sub=fields.map(function(f){return x[f]||'';}).filter(Boolean).join(' — ');
-    return '<div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);gap:8px;">'
-      +'<div style="flex:1;font-size:13px;"><strong>'+x.name+'</strong><span style="font-size:11px;color:var(--ink3);margin-right:6px;">'+sub+'</span></div>'
-      +'<button class="btn btn-danger btn-sm" onclick="delSetup(\''+table+'\',\''+x.id+'\',\''+cacheKey+'\')">حذف</button></div>';
+    return '<div style="display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);gap:8px;"><div style="flex:1;font-size:13px;"><strong>'+x.name+'</strong><span style="font-size:11px;color:var(--ink3);margin-right:6px;">'+sub+'</span></div><button class="btn btn-danger btn-sm" onclick="delSetup(\''+table+'\',\''+x.id+'\',\''+cacheKey+'\')">حذف</button></div>';
   }).join('');
 }
 
-// ═══ EXPORT ═══
-function openExp(){document.getElementById('expModal').classList.add('open');}
-function closeExp(){document.getElementById('expModal').classList.remove('open');}
-function closeBg(e){if(e.target===document.getElementById('expModal'))closeExp();}
-function doExport(type){
-  var all=[];
-  CACHE.faseel_records.forEach(function(r){all.push({type:'فصيل',officer:r.officer_name,faseel:r.faseel_name,date:r.record_date,present:r.present,absent:r.absent,late:r.late,arif:r.arif_status,notes:r.notes||''});});
-  CACHE.guard_records.forEach(function(r){all.push({type:'خفارة',officer:r.officer_name,faseel:'—',date:r.record_date,present:r.count,absent:r.detained,late:r.medical,arif:'—',notes:r.notes||''});});
-  var hdrs=['النوع','المسؤول','الفصيل','التاريخ','حاضر/طلبة','غائب/محجوز','متأخر/طبي','حالة العريف','ملاحظات'];
-  var rows=all.map(function(r){return [r.type,r.officer,r.faseel,r.date,r.present,r.absent,r.late,r.arif,r.notes];});
-  if(type==='json'){dlFile(JSON.stringify({faseel_records:CACHE.faseel_records,guard_records:CACHE.guard_records,violations:CACHE.violations},null,2),'export_'+iso(new Date())+'.json','application/json');}
-  else if(type==='csv'){
-    var bom='\uFEFF', csv=[hdrs].concat(rows).map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-    dlFile(bom+csv,'report_'+iso(new Date())+'.csv','text/csv;charset=utf-8');
-  } else {
-    var tbl='<html><head><meta charset="UTF-8"></head><body><table border="1"><thead><tr>'+hdrs.map(function(h){return '<th style="background:#1C3F7A;color:white;direction:rtl;">'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows.map(function(r){return '<tr>'+r.map(function(c){return '<td style="direction:rtl;">'+(c||'')+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></body></html>';
-    dlFile(tbl,'report_'+iso(new Date())+'.xls','application/vnd.ms-excel');
-  }
-  logToDb('export',{type:type,count:all.length}); closeExp(); toast('تم التصدير');
+// ════════════════════════════════════
+// LOG
+// ════════════════════════════════════
+function logAct(type,details){
+  sbInsert('activity_log',{action_type:type,user_name:CUR_USER?CUR_USER.name:'',details:details}).then(function(res){if(Array.isArray(res)&&res[0])C.logs.unshift(res[0]);});
 }
 
-// ═══ HELPERS ═══
-function dlFile(content,filename,mime){var blob=new Blob([content],{type:mime});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+function renderLog(){
+  var body=document.getElementById('logBody');
+  if(!C.logs.length){body.innerHTML='<div class="empty"><p>لا توجد سجلات نشاط</p></div>';return;}
+  var typeColors={'save':'var(--green)','delete':'var(--red)','export':'var(--amber)'};
+  var typeNames={'save':'حفظ','delete':'حذف','export':'تصدير'};
+  var html='';
+  C.logs.forEach(function(l){
+    var dt=new Date(l.created_at);
+    var details=l.details||{};
+    if(typeof details==='string'){try{details=JSON.parse(details);}catch(e){details={};}}
+    var color=typeColors[l.action_type]||'var(--royal)';
+    html+='<div class="rec-card">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+    html+='<span style="font-size:12px;font-weight:800;color:'+color+';">'+(typeNames[l.action_type]||l.action_type)+'</span>';
+    html+='<span style="font-size:11px;color:var(--ink3);">'+dt.toLocaleDateString('ar-KW',{year:'numeric',month:'short',day:'numeric'})+' — '+dt.toLocaleTimeString('ar-KW',{hour:'2-digit',minute:'2-digit'})+'</span>';
+    html+='</div>';
+    if(l.user_name) html+='<div style="font-size:12px;color:var(--ink2);margin-bottom:6px;">المستخدم: <strong>'+l.user_name+'</strong></div>';
+    if(details.officer||details.faseel||details.date){
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;font-size:12px;">';
+      if(details.officer) html+='<div><span style="color:var(--ink3);">المسؤول: </span>'+details.officer+'</div>';
+      if(details.faseel)  html+='<div><span style="color:var(--ink3);">الفصيل: </span>'+details.faseel+'</div>';
+      if(details.date)    html+='<div><span style="color:var(--ink3);">التاريخ: </span>'+fmtD(details.date)+'</div>';
+      if(details.present!==undefined) html+='<div><span style="color:var(--ink3);">حضور: </span><strong style="color:var(--green);">'+details.present+'</strong></div>';
+      if(details.absent!==undefined)  html+='<div><span style="color:var(--ink3);">غياب: </span><strong style="color:var(--red);">'+details.absent+'</strong></div>';
+      if(details.violations>0) html+='<div><span style="color:var(--ink3);">مخالفات: </span><strong style="color:var(--red);">'+details.violations+'</strong></div>';
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+  body.innerHTML=html;
+}
+
+// ════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════
 function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function fmtD(d){if(!d)return'—';var dt=new Date(d+'T12:00:00');return dt.toLocaleDateString('ar-KW',{year:'numeric',month:'short',day:'numeric'});}
+function fmtDShort(d){if(!d)return'—';var dt=new Date(d+'T12:00:00');return dt.getDate()+'/'+(dt.getMonth()+1);}
 function getVal(id){var el=document.getElementById(id);return el?el.value.trim():'';}
 function getNum(id){var el=document.getElementById(id);return parseInt(el?el.value:0)||0;}
 function nudge(id,d){var el=document.getElementById(id);if(el)el.value=Math.max(0,(parseInt(el.value)||0)+d);}
 function toast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.style.background=type==='red'?'var(--red)':'var(--royal)';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
+function dlFile(content,filename,mime){var blob=new Blob([content],{type:mime});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+function exportToExcel(rows,name){
+  var bom='\uFEFF';
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  dlFile(bom+csv,name+'.csv','text/csv;charset=utf-8');
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
 </script>
 </body>
 </html>
