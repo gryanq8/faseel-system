@@ -153,7 +153,7 @@ tbody tr:last-child td{border-bottom:none;}tbody tr:hover{background:var(--sf2);
 <div class="le" id="LE"></div>
 <div class="lf"><label>البريد الإلكتروني</label><input type="email" id="LEM" placeholder="example@saad.edu.kw"></div>
 <div class="lf"><label>كلمة المرور</label><input type="password" id="LPW" placeholder="••••••••" id="lpw"></div>
-<button class="btn bn bfw" id="LB" style="margin-top:4px;">دخول النظام</button>
+<button class="btn bn bfw" id="LOGIN_BTN" style="margin-top:4px;">دخول النظام</button>
 <div class="lh">
 <strong>للتجربة:</strong><br>
 director@saad.edu.kw / admin123 — مدير الكلية<br>
@@ -265,7 +265,7 @@ data@saad.edu.kw / data123 — مدخل البيانات
 <div class="ph">
 <div><div class="ptt">الطلبة</div><div class="pst" id="STDS"></div></div>
 <div class="pac np">
-<button class="btn bn bsm" id="STI">رفع Excel</button>
+<button class="btn bn bsm" id="STI">رفع ملف</button>
 <button class="btn bh bsm" id="STT">نموذج</button>
 </div>
 </div>
@@ -284,7 +284,7 @@ data@saad.edu.kw / data123 — مدخل البيانات
 
 <div class="pg" id="pg-log"><div class="ct">
 <div class="ph"><div><div class="ptt">سجل النشاط</div></div></div>
-<div id="LB"><div class="ld2"><div class="sp"></div>جار التحميل...</div></div>
+<div id="LOG_BODY"><div class="ld2"><div class="sp"></div>جار التحميل...</div></div>
 </div></div>
 
 </main>
@@ -294,7 +294,7 @@ data@saad.edu.kw / data123 — مدخل البيانات
 <div class="ov" id="IM"><div class="mo">
 <button class="moc" id="IMC">✕</button>
 <div class="mot">استيراد بيانات الطلبة</div>
-<div style="font-size:12px;color:var(--ink2);margin-bottom:12px;line-height:1.7;">أعمدة CSV: <strong>الاسم، الرقم العسكري، الدفعة، نوع الدراسة، السنة الدراسية، الفصيل، السرية</strong></div>
+<div style="font-size:12px;color:var(--ink2);margin-bottom:12px;line-height:1.7;">أعمدة الملف: <strong>الاسم، الرقم العسكري، الدفعة، نوع الدراسة، السنة الدراسية، الفصيل، السرية</strong></div>
 <input type="file" id="SF" accept=".csv">
 <div id="IR" style="margin-top:10px;font-size:12px;"></div>
 </div></div>
@@ -323,22 +323,12 @@ data@saad.edu.kw / data123 — مدخل البيانات
 var SU='https://wuxeeyhogzbdrnjxjvoi.supabase.co';
 var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1eGVleWhvZ3piZHJuanhqdm9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NjY4NjUsImV4cCI6MjA5NjM0Mjg2NX0.JirtGfINXlby3yhMcUSn50pZ51kscQp1AMSEhWMKAxM';
 
-var USERS={
-  'director@saad.edu.kw':{pw:'admin123',name:'العميد / محمد الرشيد',rank:'عميد',role:'مدير_الكلية'},
-  'seria1@saad.edu.kw':{pw:'seria123',name:'الرائد / فهد الشمري',rank:'رائد',role:'أمر_سرية',sn:'السرية الأولى'},
-  'seria2@saad.edu.kw':{pw:'seria123',name:'الرائد / ناصر الدوسري',rank:'رائد',role:'أمر_سرية',sn:'السرية الثالثة'},
-  'guard_mgr@saad.edu.kw':{pw:'mgr123',name:'المقدم / خالد العنزي',rank:'مقدم',role:'مسؤول_الخفارات'},
-  'officer1@saad.edu.kw':{pw:'off123',name:'الملازم أول / أحمد الكويتي',rank:'ملازم أول',role:'أمر_فصيل',fn:'الفصيل الأول'},
-  'officer2@saad.edu.kw':{pw:'off123',name:'الملازم / خالد العازمي',rank:'ملازم',role:'أمر_فصيل',fn:'الفصيل الثاني'},
-  'guard1@saad.edu.kw':{pw:'grd123',name:'الملازم أول / عبدالله الزهراني',rank:'ملازم أول',role:'ضابط_خفر'},
-  'guard2@saad.edu.kw':{pw:'grd123',name:'الملازم / فهد العتيبي',rank:'ملازم',role:'ضابط_خفر'},
-  'data@saad.edu.kw':{pw:'data123',name:'الرقيب / سعد المطيري',rank:'رقيب',role:'مدخل_بيانات'}
-};
+// الحسابات التجريبية لم تعد تُستخدم في الدخول؛ الدخول الآن من جدول app_users في Supabase.
 
 var RL={'مدير_الكلية':'مدير الكلية','أمر_سرية':'أمر السرية','مسؤول_الخفارات':'مسؤول الخفارات','أمر_فصيل':'أمر الفصيل','ضابط_خفر':'ضابط الخفر','مدخل_بيانات':'مدخل البيانات'};
 var DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 var CUR=null;
-var C={serias:[],faseels:[],students:[],arifs:[],guard_schedules:[],violation_types:[],faseel_records:[],guard_records:[],violations:[],detentions:[],announcements:[],record_notes:[],logs:[],app_users:[]};
+var C={serias:[],faseels:[],students:[],arifs:[],guard_schedules:[],violation_types:[],faseel_records:[],guard_records:[],violations:[],detentions:[],announcements:[],record_notes:[],logs:[],app_users:[],officer_faseels:[]};
 var fTatts=[],gTatts=[],fVios=[],gVios=[];
 var ChInst={};
 
@@ -349,8 +339,6 @@ var NAV={
     {id:'vio',l:'الانضباطيات',ic:'⚠️',s:'رئيسي'},
     {id:'rpt',l:'التقارير',ic:'📄',s:'رئيسي'},
     {id:'ann',l:'التعاميم',ic:'📢',s:'تواصل'},
-    {id:'std',l:'الطلبة',ic:'👥',s:'بيانات'},
-    {id:'setup',l:'الإعداد',ic:'⚙️',s:'بيانات'},
     {id:'log',l:'سجل النشاط',ic:'🕐',s:'بيانات'}
   ],
   'أمر_سرية':[
@@ -387,6 +375,7 @@ var NAV={
 // ══ SUPABASE ══
 function H(x){var h={'Content-Type':'application/json','apikey':SK,'Authorization':'Bearer '+SK};if(x)for(var k in x)h[k]=x[k];return h;}
 function sGet(t,f,o,l){var u=SU+'/rest/v1/'+t+'?select=*';if(f)f.forEach(function(fi){u+='&'+fi;});if(o)u+='&order='+o;if(l)u+='&limit='+l;return fetch(u,{headers:H()}).then(function(r){return r.ok?r.json():[];});}
+function sEq(col,val){return encodeURIComponent(col)+'=eq.'+encodeURIComponent(val||'');}
 function sIns(t,d){return fetch(SU+'/rest/v1/'+t,{method:'POST',headers:H({'Prefer':'return=representation'}),body:JSON.stringify(d)}).then(function(r){return r.ok?r.json():[];});}
 function sPch(t,id,d){return fetch(SU+'/rest/v1/'+t+'?id=eq.'+id,{method:'PATCH',headers:H({'Prefer':'return=representation'}),body:JSON.stringify(d)}).then(function(r){return r.ok?r.json():[];});}
 function sDel(t,id){return fetch(SU+'/rest/v1/'+t+'?id=eq.'+id,{method:'DELETE',headers:H()});}
@@ -406,12 +395,13 @@ function loadAll(){
     sGet('announcements','','created_at.desc').then(function(d){if(Array.isArray(d))C.announcements=d;}),
     sGet('record_notes','','created_at.asc').then(function(d){if(Array.isArray(d))C.record_notes=d;}),
     sGet('activity_log','','created_at.desc','100').then(function(d){if(Array.isArray(d))C.logs=d;}),
-    sGet('app_users','','name.asc').then(function(d){if(Array.isArray(d))C.app_users=d;})
+    sGet('app_users','','name.asc').then(function(d){if(Array.isArray(d))C.app_users=d;}),
+    sGet('officer_faseels','','created_at.desc').then(function(d){if(Array.isArray(d))C.officer_faseels=d;})
   ]);
 }
 // ══ AUTH ══
 function init(){
-  var btn=document.getElementById('LB');
+  var btn=document.getElementById('LOGIN_BTN');
   var lpw=document.getElementById('LPW');
   if(btn)btn.addEventListener('click',doLogin);
   if(lpw)lpw.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
@@ -422,22 +412,29 @@ function init(){
 function doLogin(){
   var em=(document.getElementById('LEM').value||'').trim().toLowerCase();
   var pw=document.getElementById('LPW').value;
-  var btn=document.getElementById('LB');
+  var btn=document.getElementById('LOGIN_BTN');
   var err=document.getElementById('LE');
   err.style.display='none';
   if(!em||!pw){showE('أدخل البريد وكلمة المرور');return;}
-  var u=USERS[em];
-  if(!u||u.pw!==pw){showE('بيانات الدخول غير صحيحة');return;}
-  CUR={email:em,name:u.name,rank:u.rank||'',role:u.role,sn:u.sn||'',fn:u.fn||''};
-  btn.textContent='جار التحميل...';btn.disabled=true;
-  loadAll().then(function(){
+  btn.textContent='جار التحقق...';btn.disabled=true;
+  sGet('app_users',[sEq('email',em),'active=eq.true'],'',1).then(function(rows){
+    var u=Array.isArray(rows)?rows[0]:null;
+    if(!u||String(u.password||'')!==String(pw||'')){
+      showE('بيانات الدخول غير صحيحة');
+      return Promise.reject('login');
+    }
+    CUR={
+      id:u.id,email:u.email,name:u.name,rank:u.rank||'',role:u.role,
+      sn:u.seria_name||'',seria_id:u.seria_id||'',study_year:u.study_year||'',study_type:u.study_type||'',fn:''
+    };
+    btn.textContent='جار تحميل البيانات...';
+    return loadAll();
+  }).then(function(){
     document.getElementById('LP').style.display='none';
     document.getElementById('AP').style.display='block';
     initApp();
-  }).catch(function(){
-    document.getElementById('LP').style.display='none';
-    document.getElementById('AP').style.display='block';
-    initApp();
+  }).catch(function(e){
+    if(e!=='login')showE('تعذر الاتصال بقاعدة البيانات أو تحميل المستخدم');
   }).finally(function(){btn.textContent='دخول النظام';btn.disabled=false;});
 }
 function showE(m){var e=document.getElementById('LE');e.textContent=m;e.style.display='block';}
@@ -550,9 +547,10 @@ function rForm(){
   document.getElementById('FT').textContent=role==='ضابط_خفر'?'تسجيل الخفارة':'التسجيل اليومي';
   var body=document.getElementById('FB');
   if(role==='أمر_فصيل'){
-    var myF=C.faseels.filter(function(f){return f.name===CUR.fn;});
-    if(!myF.length)myF=C.faseels.slice(0,1);
-    document.getElementById('FS').textContent=myF.map(function(f){return f.name;}).join(' — ');
+    var links=C.officer_faseels.filter(function(x){return x.officer_id===CUR.id;}).map(function(x){return x.faseel_id;});
+    var myF=C.faseels.filter(function(f){return links.indexOf(f.id)>=0;});
+    if(!myF.length){body.innerHTML='<div class="empty"><div class="ei">🚫</div><p>لم يتم ربط حسابك بأي فصيل. راجع مدخل البيانات.</p></div>';return;}
+    document.getElementById('FS').textContent=myF.map(function(f){return f.name+' — '+(f.seria_name||'')+' — '+(f.study_year||'');}).join(' | ');
     buildFForm(myF,body);
   }else if(role==='ضابط_خفر'){
     var td=iso(new Date());
@@ -782,7 +780,7 @@ function colVios(p,rId,rT,dt){
     var sp=ss.value.split('|');
     var vs=document.getElementById('vt'+id);if(!vs||!vs.value)return;
     var vp=vs.value.split('|');
-    out.push({record_id:rId,record_type:rT,reporter_name:CUR.name,student_id:sp[0],violator_name:sp[1],violator_military:sp[2],violator_faseel:sp[3],violation_type_id:vp[0],violation_type:vp[1],punishment:vp[2],duration:vp[3],auto_detain:vp[4]==='1',violation_date:dt,notes:gv('vn'+id)});
+    out.push({record_id:rId,record_type:rT,reporter_id:CUR.id,reporter_name:CUR.name,student_id:sp[0],violator_name:sp[1],violator_military:sp[2],violator_faseel:sp[3],violator_seria:'',study_year:'',violation_type_id:vp[0],violation_type:vp[1],punishment:vp[2],duration:vp[3],auto_detain:vp[4]==='1',violation_date:dt,notes:gv('vn'+id)});
   });
   return out;
 }
@@ -796,7 +794,7 @@ function savF(){
   fids.forEach(function(fid,fi){
     var p='f'+fi;var f=C.faseels.find(function(x){return x.id===fid;})||{};
     var date=gv('fd'+p)||today;
-    var rec={officer_name:CUR.name,officer_rank:CUR.rank,faseel_id:fid,faseel_name:f.name||'',seria_name:f.seria_name||'',study_year:f.study_year||'',total:f.count||0,record_date:date,day_name:DAYS[new Date(date+'T12:00:00').getDay()],present:gn('fp'+p),absent:gn('fa'+p),late:gn('fl'+p),arif_name:gv('fan'+p),arif_status:gv('fas'+p)||'حاضر',arif_deputy:gv('fad'+p)||'',tattimeem:colTatts('f'),notes:gv('fnt'+p)};
+    var rec={officer_id:CUR.id,officer_name:CUR.name,officer_rank:CUR.rank,faseel_id:fid,faseel_name:f.name||'',seria_id:f.seria_id||null,seria_name:f.seria_name||'',study_year:f.study_year||'',study_type:f.study_type||'طالب ضابط',total:f.count||0,record_date:date,day_name:DAYS[new Date(date+'T12:00:00').getDay()],present:gn('fp'+p),absent:gn('fa'+p),late:gn('fl'+p),arif_name:gv('fan'+p),arif_status:gv('fas'+p)||'حاضر',arif_deputy:gv('fad'+p)||'',tattimeem:colTatts('f'),notes:gv('fnt'+p)};
     promises.push(sIns('faseel_records',rec).then(function(res){
       var ins=Array.isArray(res)?res[0]:res;C.faseel_records.unshift(ins||rec);
       var vios=colVios('f',ins?ins.id:null,'faseel',date);
@@ -814,7 +812,7 @@ function savF(){
 function savG(){
   var btn=document.getElementById('GSB');btn.textContent='جار الحفظ...';btn.disabled=true;
   var date=gv('gD')||iso(new Date());
-  var rec={officer_name:CUR.name,officer_rank:CUR.rank,study_year:gv('gY')||'',record_date:date,day_name:DAYS[new Date(date+'T12:00:00').getDay()],from_time:gv('gF'),to_time:gv('gTO'),guard_type:gv('gTp')||'يوم عادي',count:gn('gCnt'),detained:gn('gDt'),medical:gn('gMd'),tattimeem:colTatts('g'),notes:gv('gNt')};
+  var rec={officer_id:CUR.id,officer_name:CUR.name,officer_rank:CUR.rank,study_year:gv('gY')||'',study_type:'طالب ضابط',record_date:date,day_name:DAYS[new Date(date+'T12:00:00').getDay()],from_time:gv('gF'),to_time:gv('gTO'),guard_type:gv('gTp')||'يوم عادي',count:gn('gCnt'),detained:gn('gDt'),medical:gn('gMd'),tattimeem:colTatts('g'),notes:gv('gNt')};
   sIns('guard_records',rec).then(function(res){
     var ins=Array.isArray(res)?res[0]:res;C.guard_records.unshift(ins||rec);
     var vios=colVios('g',ins?ins.id:null,'guard',date);
@@ -836,8 +834,8 @@ function rRecs(){
   var role=CUR.role;var all=[];
   C.faseel_records.forEach(function(r){
     if(ft==='g')return;
-    if(role==='أمر_فصيل'&&r.officer_name!==CUR.name)return;
-    if(role==='أمر_سرية'&&r.seria_name!==CUR.sn)return;
+    if(role==='أمر_فصيل'&&r.officer_id!==CUR.id)return;
+    if(role==='أمر_سرية'&&r.seria_id!==CUR.seria_id)return;
     if(role==='ضابط_خفر'||role==='مسؤول_الخفارات')return;
     if(q&&(r.officer_name||'').toLowerCase().indexOf(q)<0&&(r.faseel_name||'').toLowerCase().indexOf(q)<0)return;
     if(fr&&r.record_date<fr)return;if(to&&r.record_date>to)return;
@@ -846,7 +844,7 @@ function rRecs(){
   C.guard_records.forEach(function(r){
     if(ft==='f')return;
     if(role==='أمر_فصيل')return;
-    if(role==='ضابط_خفر'&&r.officer_name!==CUR.name)return;
+    if(role==='ضابط_خفر'&&r.officer_id!==CUR.id)return;
     if(q&&(r.officer_name||'').toLowerCase().indexOf(q)<0)return;
     if(fr&&r.record_date<fr)return;if(to&&r.record_date>to)return;
     all.push({r:r,t:'g'});
@@ -927,7 +925,7 @@ function sendNote(){
   var rid=document.getElementById('NR').value;var rt=document.getElementById('NRT').value;
   var msg=document.getElementById('NMSG').value.trim();
   if(!msg){toast('اكتب رسالة','er');return;}
-  sIns('record_notes',{record_id:rid,record_type:rt,sender_name:CUR.name,sender_role:CUR.role,message:msg,is_read:false}).then(function(res){
+  sIns('record_notes',{record_id:rid,record_type:rt,sender_id:CUR.id,sender_name:CUR.name,sender_role:CUR.role,message:msg,is_read:false}).then(function(res){
     if(Array.isArray(res)&&res[0])C.record_notes.push(res[0]);
     toast('تم الإرسال','ok');closeOv('NM');rRecs();
   });
@@ -939,8 +937,8 @@ function rVios(){
   var fr=document.getElementById('VF').value;var to=document.getElementById('VT').value;
   var role=CUR.role;
   var all=C.violations.filter(function(v){
-    if(role==='أمر_فصيل'&&v.reporter_name!==CUR.name)return false;
-    if(role==='ضابط_خفر'&&v.reporter_name!==CUR.name)return false;
+    if(role==='أمر_فصيل'&&v.reporter_id!==CUR.id)return false;
+    if(role==='ضابط_خفر'&&v.reporter_id!==CUR.id)return false;
     if(q&&(v.violator_name||'').toLowerCase().indexOf(q)<0)return false;
     if(fr&&v.violation_date<fr)return false;if(to&&v.violation_date>to)return false;
     return true;
@@ -969,15 +967,15 @@ function rDash(){
 
   var fR=C.faseel_records.filter(function(r){
     if(r.record_date<from||r.record_date>to)return false;
-    if(role==='أمر_سرية')return r.seria_name===CUR.sn;
-    if(role==='أمر_فصيل')return r.officer_name===CUR.name;
+    if(role==='أمر_سرية')return r.seria_id===CUR.seria_id;
+    if(role==='أمر_فصيل')return r.officer_id===CUR.id;
     if(role==='ضابط_خفر'||role==='مسؤول_الخفارات')return false;
     return true;
   });
   var gR=C.guard_records.filter(function(r){
     if(r.record_date<from||r.record_date>to)return false;
     if(role==='أمر_فصيل')return false;
-    if(role==='ضابط_خفر')return r.officer_name===CUR.name;
+    if(role==='ضابط_خفر')return r.officer_id===CUR.id;
     return true;
   });
   var vs=C.violations.filter(function(v){return v.violation_date>=from&&v.violation_date<=to;});
@@ -991,7 +989,7 @@ function rDash(){
   // Alerts
   var als=[];
   if(role!=='ضابط_خفر'&&role!=='مسؤول_الخفارات'){
-    var myF=role==='أمر_سرية'?C.faseels.filter(function(f){var s=C.serias.find(function(x){return x.id===f.seria_id;});return s&&s.name===CUR.sn;}):role==='أمر_فصيل'?C.faseels.filter(function(f){return f.name===CUR.fn;}):C.faseels;
+    var myF=role==='أمر_سرية'?C.faseels.filter(function(f){return f.seria_id===CUR.seria_id;}):role==='أمر_فصيل'?C.faseels.filter(function(f){return C.officer_faseels.some(function(of){return of.officer_id===CUR.id&&of.faseel_id===f.id;});}):C.faseels;
     myF.forEach(function(f){
       var last=C.faseel_records.filter(function(r){return r.faseel_id===f.id;}).sort(function(a,b){return b.record_date>a.record_date?1:-1;})[0];
       if(!last){als.push({t:'ae',m:'لم يُسجَّل بعد: '+f.name});return;}
@@ -1025,7 +1023,7 @@ function rDash(){
     h+='<div class="cw"><div class="cwt">توزيع الحالات</div><canvas id="cD" height="200"></canvas></div></div>';
   }
 
-  var showF=role==='أمر_سرية'?C.faseels.filter(function(f){var s=C.serias.find(function(x){return x.id===f.seria_id;});return s&&s.name===CUR.sn;}):role==='أمر_فصيل'?C.faseels.filter(function(f){return f.name===CUR.fn;}):role==='مسؤول_الخفارات'?[]:C.faseels;
+  var showF=role==='أمر_سرية'?C.faseels.filter(function(f){return f.seria_id===CUR.seria_id;}):role==='أمر_فصيل'?C.faseels.filter(function(f){return C.officer_faseels.some(function(of){return of.officer_id===CUR.id&&of.faseel_id===f.id;});}):role==='مسؤول_الخفارات'?[]:C.faseels;
   if(showF.length){
     h+='<div class="cd"><div class="cdh"><div class="cdi">🏴</div><div><div class="cdt">حالة الفصائل</div></div></div>';
     h+='<div class="tw"><table><thead><tr><th>الفصيل</th><th>السرية</th><th>السنة</th><th>حاضر</th><th>غائب</th><th>متأخر</th><th>مخالفات</th><th>آخر تسجيل</th><th>الحالة</th></tr></thead><tbody>';
@@ -1108,7 +1106,7 @@ function sendAnn(){
   var body2=document.getElementById('ANBD').value.trim();
   var tgt=document.getElementById('ANTG').value;
   if(!title||!body2){toast('أدخل العنوان والمحتوى','er');return;}
-  sIns('announcements',{sender_name:CUR.name,sender_role:CUR.role,title:title,body:body2,target:tgt}).then(function(res){
+  sIns('announcements',{sender_id:CUR.id,sender_name:CUR.name,sender_role:CUR.role,title:title,body:body2,target:tgt}).then(function(res){
     if(Array.isArray(res)&&res[0])C.announcements.unshift(res[0]);
     toast('تم إرسال التعميم','ok');closeOv('AM');rAnns();
     document.getElementById('ANTL').value='';document.getElementById('ANBD').value='';
@@ -1186,7 +1184,7 @@ function rStd(){
   });
   document.getElementById('SC').textContent=all.length+' طالب';
   var body=document.getElementById('SB');
-  if(!all.length){body.innerHTML='<div class="empty"><div class="ei">👥</div><p>لا توجد بيانات. ارفع ملف Excel للبدء.</p></div>';return;}
+  if(!all.length){body.innerHTML='<div class="empty"><div class="ei">👥</div><p>لا توجد بيانات. ارفع ملف CSV أو أضف طالبًا يدويًا من الإعداد.</p></div>';return;}
   var h='<div class="tw"><table><thead><tr><th>الاسم</th><th>الرقم العسكري</th><th>الدفعة</th><th>نوع الدراسة</th><th>السنة</th><th>الفصيل</th><th>السرية</th></tr></thead><tbody>';
   all.forEach(function(s){h+='<tr><td><strong>'+s.name+'</strong></td><td>'+(s.military_number||'—')+'</td><td>'+(s.batch||'—')+'</td><td><span class="tag '+(s.study_type==='طالب ضابط اختصاص'?'ta':'tn')+'">'+s.study_type+'</span></td><td>'+(s.study_year||'—')+'</td><td>'+(s.faseel_name||'—')+'</td><td style="font-size:11px;">'+(s.seria_name||'—')+'</td></tr>';});
   h+='</tbody></table></div>';body.innerHTML=h;
@@ -1204,10 +1202,10 @@ function impStd(input){
       var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
       var obj={};hdrs.forEach(function(h,j){obj[h]=vals[j]||'';});
       var name=obj['الاسم']||'';if(!name)continue;
-      var fN=obj['الفصيل']||'';var sN=obj['السرية']||'';
-      var fObj=C.faseels.find(function(f){return f.name===fN;});
-      var sObj=C.serias.find(function(s){return s.name===sN;});
-      students.push({name:name,military_number:obj['الرقم العسكري']||'',batch:obj['الدفعة']||'',study_type:obj['نوع الدراسة']||'طالب ضابط',study_year:obj['السنة الدراسية']||'',faseel_id:fObj?fObj.id:null,faseel_name:fN,seria_id:sObj?sObj.id:null,seria_name:sN});
+      var fN=obj['الفصيل']||'';var sN=obj['السرية']||'';var y=obj['السنة الدراسية']||'';var st=obj['نوع الدراسة']||'طالب ضابط';
+      var sObj=C.serias.find(function(s){return s.name===sN&&s.study_year===y;});
+      var fObj=C.faseels.find(function(f){return f.name===fN&&f.study_year===y&&(!sObj||f.seria_id===sObj.id);});
+      students.push({name:name,military_number:obj['الرقم العسكري']||'',batch:obj['الدفعة']||'',study_type:st,study_year:y,faseel_id:fObj?fObj.id:null,faseel_name:fN,seria_id:sObj?sObj.id:null,seria_name:sN});
     }
     if(!students.length){res.innerHTML='<span style="color:var(--red);">لم تُعثر على بيانات</span>';return;}
     sIns('students',students).then(function(ins){
@@ -1223,7 +1221,7 @@ function dlTpl(){var bom='\uFEFF';var csv='الاسم,الرقم العسكري,
 // ══ SETUP ══
 function rSetup(){
   var role=CUR.role;var body=document.getElementById('SUB');var h='';
-  if(role==='مدخل_بيانات'||role==='مدير_الكلية'){
+  if(role==='مدخل_بيانات'){
     h+='<div class="sh"><div class="snb">١</div><h2>السرايا</h2></div>';
     h+='<div class="cd"><div class="g3"><div class="fi"><label>اسم السرية <span class="req">*</span></label><input type="text" id="nSN" placeholder="السرية الأولى"></div>';
     h+='<div class="fi"><label>السنة الدراسية</label><select id="nSY"><option value="السنة الأولى">السنة الأولى</option><option value="السنة الثانية">السنة الثانية</option><option value="السنة الثالثة">السنة الثالثة</option><option value="السنة الرابعة">السنة الرابعة</option><option value="اختصاص">اختصاص</option></select></div>';
@@ -1233,13 +1231,23 @@ function rSetup(){
 
     h+='<div class="sh"><div class="snb">٢</div><h2>الفصائل</h2></div>';
     h+='<div class="cd"><div class="g2"><div class="fi"><label>اسم الفصيل <span class="req">*</span></label><input type="text" id="nFN" placeholder="الفصيل الأول"></div>';
-    h+='<div class="fi"><label>السرية</label><select id="nFS"><option value="">— اختر —</option>'+C.serias.map(function(s){return '<option value="'+s.id+'|'+s.name+'">'+s.name+'</option>';}).join('')+'</select></div></div>';
+    h+='<div class="fi"><label>السرية</label><select id="nFS"><option value="">— اختر —</option>'+C.serias.map(function(s){return '<option value="'+s.id+'|'+s.name+'|'+s.study_year+'|'+s.study_type+'">'+s.name+' — '+s.study_year+'</option>';}).join('')+'</select></div></div>';
     h+='<div class="g2"><div class="fi"><label>عدد الطلبة</label><input type="number" id="nFC" placeholder="40"></div>';
     h+='<div class="fi"><label>السنة الدراسية</label><select id="nFY"><option value="السنة الأولى">السنة الأولى</option><option value="السنة الثانية">السنة الثانية</option><option value="السنة الثالثة">السنة الثالثة</option><option value="السنة الرابعة">السنة الرابعة</option><option value="اختصاص">اختصاص</option></select></div></div>';
     h+='<button class="btn bn bsm" id="nFAdd">إضافة الفصيل</button>';
     h+='<div id="FRL" style="margin-top:12px;">'+C.faseels.map(function(f){return '<div style="padding:6px 0;border-bottom:1px solid var(--br);font-size:12px;display:flex;gap:8px;align-items:center;"><strong style="flex:1;">'+f.name+'</strong><span class="tag tgy">'+(f.seria_name||'—')+'</span><span class="tag tn">'+(f.study_year||'—')+'</span></div>';}).join('')+'</div></div>';
 
-    h+='<div class="sh"><div class="snb">٣</div><h2>أنواع الانضباطيات</h2></div>';
+    h+='<div class="sh"><div class="snb">٣</div><h2>الطلبة</h2></div>';
+    h+='<div class="cd"><div style="font-size:12px;color:var(--ink2);margin-bottom:10px;">إضافة طالب يدويًا أو رفع ملف CSV بالأعمدة: <strong>الاسم، الرقم العسكري، الدفعة، نوع الدراسة، السنة الدراسية، الفصيل، السرية</strong></div>';
+    h+='<div class="g3"><div class="fi"><label>اسم الطالب <span class="req">*</span></label><input type="text" id="nStN"></div><div class="fi"><label>الرقم العسكري</label><input type="text" id="nStM"></div><div class="fi"><label>الدفعة</label><input type="text" id="nStB"></div></div>';
+    h+='<div class="g3"><div class="fi"><label>نوع الدراسة</label><select id="nStT"><option value="طالب ضابط">طالب ضابط</option><option value="طالب ضابط اختصاص">طالب ضابط اختصاص</option></select></div>';
+    h+='<div class="fi"><label>السرية</label><select id="nStS"><option value="">— اختر —</option>'+C.serias.map(function(s){return '<option value="'+s.id+'|'+s.name+'|'+s.study_year+'|'+s.study_type+'">'+s.name+' — '+s.study_year+'</option>';}).join('')+'</select></div>';
+    h+='<div class="fi"><label>الفصيل</label><select id="nStF"><option value="">— اختر —</option>'+C.faseels.map(function(f){return '<option value="'+f.id+'|'+f.name+'|'+f.seria_id+'|'+f.seria_name+'|'+f.study_year+'|'+(f.study_type||'طالب ضابط')+'">'+f.name+' — '+(f.seria_name||'')+' — '+(f.study_year||'')+'</option>';}).join('')+'</select></div></div>';
+    h+='<input type="file" id="USF" accept=".csv" style="display:none;">';
+    h+='<div class="brow"><button class="btn bn bsm" id="nStAdd">إضافة طالب</button><button class="btn bg bsm" id="USFB">رفع ملف الطلبة</button><button class="btn bh bsm" id="USTB">نموذج الطلبة</button></div>';
+    h+='<div id="USR" style="margin-top:8px;font-size:12px;"></div></div>';
+
+    h+='<div class="sh"><div class="snb">٤</div><h2>أنواع الانضباطيات</h2></div>';
     h+='<div class="cd"><div class="g2"><div class="fi"><label>اسم المخالفة <span class="req">*</span></label><input type="text" id="nVN" placeholder="تدخين"></div><div class="fi"><label>العقوبة</label><input type="text" id="nVP" placeholder="حجز ويكند"></div></div>';
     h+='<div class="g2"><div class="fi"><label>المدة</label><input type="text" id="nVD" placeholder="خميس - جمعة - سبت"></div><div class="fi"><label>حجز تلقائي؟</label><select id="nVA"><option value="false">لا</option><option value="true">نعم</option></select></div></div>';
     h+='<button class="btn bn bsm" id="nVAdd">إضافة</button>';
@@ -1259,19 +1267,28 @@ function rSetup(){
     h+='<div id="DR" style="margin-top:8px;font-size:12px;"></div>';
     h+='<div id="DRL" style="margin-top:10px;max-height:180px;overflow-y:auto;">'+C.detentions.slice(0,20).map(function(d){return '<div style="padding:5px 0;border-bottom:1px solid var(--br);font-size:12px;display:flex;gap:8px;"><strong style="flex:1;">'+d.student_name+'</strong><span style="color:var(--ink3);">'+(d.faseel_name||'—')+'</span><span style="color:var(--amb);">'+fD(d.detention_from)+' — '+fD(d.detention_to)+'</span></div>';}).join('')+'</div></div>';
   }
-  if(role==='مسؤول_الخفارات'||role==='مدير_الكلية'){
+  if(role==='مسؤول_الخفارات'||role==='مدخل_بيانات'){
     h+='<div class="sh"><div class="snb g">كشف</div><h2>جدول ضباط الخفر</h2></div>';
     h+='<div class="cd"><div class="g2"><div class="fi"><label>ضابط الخفر <span class="req">*</span></label><select id="nGO"><option value="">— اختر —</option>'+C.app_users.filter(function(u){return u.role==='ضابط_خفر';}).map(function(u){return '<option value="'+u.id+'|'+u.name+'">'+u.name+'</option>';}).join('')+'</select></div><div class="fi"><label>التاريخ <span class="req">*</span></label><input type="date" id="nGD" value="'+iso(new Date())+'"></div></div>';
     h+='<div class="g3"><div class="fi"><label>السنة الدراسية</label><select id="nGY"><option value="">— اختر —</option><option value="السنة الأولى">السنة الأولى</option><option value="السنة الثانية">السنة الثانية</option><option value="السنة الثالثة">السنة الثالثة</option><option value="السنة الرابعة">السنة الرابعة</option><option value="اختصاص">اختصاص</option></select></div>';
     h+='<div class="fi"><label>نوع المناوبة</label><select id="nGT"><option value="يوم عادي">يوم عادي</option><option value="ويكند">ويكند</option></select></div>';
-    h+='<div class="fi"><label>السرية</label><select id="nGS"><option value="">— اختر —</option>'+C.serias.map(function(s){return '<option value="'+s.id+'|'+s.name+'">'+s.name+'</option>';}).join('')+'</select></div></div>';
-    h+='<button class="btn bg bsm" id="nGAdd">إضافة للكشف</button>';
+    h+='<div class="fi"><label>السرية</label><select id="nGS"><option value="">— اختر —</option>'+C.serias.map(function(s){return '<option value="'+s.id+'|'+s.name+'|'+s.study_year+'|'+s.study_type+'">'+s.name+' — '+s.study_year+'</option>';}).join('')+'</select></div></div>';
+    h+='<input type="file" id="GSF" accept=".csv" style="display:none;">';
+    h+='<div class="brow"><button class="btn bg bsm" id="nGAdd">إضافة للكشف</button><button class="btn bn bsm" id="GSFB">رفع ملف الخفارات</button><button class="btn bh bsm" id="GSTB">نموذج الخفارات</button></div><div id="GSR" style="margin-top:8px;font-size:12px;"></div>';
     h+='<div id="GRL" style="margin-top:12px;">'+C.guard_schedules.slice(0,20).map(function(s){return '<div style="padding:6px 0;border-bottom:1px solid var(--br);font-size:12px;display:flex;gap:8px;align-items:center;"><strong style="flex:1;">'+s.officer_name+'</strong><span class="tag tn">'+fD(s.schedule_date)+'</span><span class="tag tg">'+(s.study_year||'—')+'</span><span class="tag tgy">'+(s.guard_type||'—')+'</span></div>';}).join('')+'</div></div>';
   }
-  if(role==='مدير_الكلية'){
-    h+='<div class="sh"><div class="snb">حسابات</div><h2>المستخدمون</h2></div>';
+  if(role==='مدخل_بيانات'){
+    h+='<div class="sh"><div class="snb">حسابات</div><h2>إدارة المستخدمين</h2></div>';
+    h+='<div class="cd"><div style="font-size:12px;color:var(--ink2);margin-bottom:10px;">إضافة حساب يدويًا أو رفع ملف CSV للأمراء وضباط الخفر. الأعمدة: <strong>الاسم، الرتبة، البريد، كلمة المرور، الصلاحية، السنة الدراسية، السرية، الفصيل</strong></div>';
+    h+='<div class="g3"><div class="fi"><label>الاسم <span class="req">*</span></label><input type="text" id="nUN"></div><div class="fi"><label>الرتبة</label><input type="text" id="nUR"></div><div class="fi"><label>الصلاحية</label><select id="nURO"><option value="أمر_سرية">أمر سرية</option><option value="أمر_فصيل">أمر فصيل</option><option value="ضابط_خفر">ضابط خفر</option><option value="مسؤول_الخفارات">مسؤول الخفارات</option><option value="مدخل_بيانات">مدخل بيانات</option></select></div></div>';
+    h+='<div class="g2"><div class="fi"><label>البريد الإلكتروني <span class="req">*</span></label><input type="email" id="nUE"></div><div class="fi"><label>كلمة المرور <span class="req">*</span></label><input type="text" id="nUP" placeholder="مثال: off123"></div></div>';
+    h+='<div class="g2"><div class="fi"><label>السرية</label><select id="nUS"><option value="">— بدون —</option>'+C.serias.map(function(s){return '<option value="'+s.id+'|'+s.name+'|'+s.study_year+'|'+s.study_type+'">'+s.name+' — '+s.study_year+'</option>';}).join('')+'</select></div>';
+    h+='<div class="fi"><label>الفصيل لأمر الفصيل</label><select id="nUF"><option value="">— بدون —</option>'+C.faseels.map(function(f){return '<option value="'+f.id+'|'+f.name+'|'+f.seria_id+'|'+f.seria_name+'|'+f.study_year+'|'+(f.study_type||'طالب ضابط')+'">'+f.name+' — '+(f.seria_name||'')+' — '+(f.study_year||'')+'</option>';}).join('')+'</select></div></div>';
+    h+='<input type="file" id="UUF" accept=".csv" style="display:none;">';
+    h+='<div class="brow"><button class="btn bn bsm" id="nUAdd">إضافة مستخدم</button><button class="btn bg bsm" id="UUFB">رفع ملف المستخدمين</button><button class="btn bh bsm" id="UUTB">نموذج المستخدمين</button></div>';
+    h+='<div id="UUR" style="margin-top:8px;font-size:12px;"></div></div>';
     h+='<div class="cd"><div class="tw"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الصلاحية</th><th>الرتبة</th></tr></thead><tbody>';
-    Object.keys(USERS).forEach(function(em){var u=USERS[em];h+='<tr><td><strong>'+u.name+'</strong></td><td style="font-size:11px;">'+em+'</td><td><span class="tag tn">'+(RL[u.role]||u.role)+'</span></td><td>'+(u.rank||'—')+'</td></tr>';});
+    C.app_users.forEach(function(u){h+='<tr><td><strong>'+u.name+'</strong></td><td style="font-size:11px;">'+u.email+'</td><td><span class="tag tn">'+(RL[u.role]||u.role)+'</span></td><td>'+(u.rank||'—')+'</td></tr>';});
     h+='</tbody></table></div></div>';
   }
   body.innerHTML=h;
@@ -1285,15 +1302,116 @@ function bindSetup(){
   b=document.getElementById('nGAdd');if(b)b.addEventListener('click',addSch);
   b=document.getElementById('AFB');if(b)b.addEventListener('click',function(){document.getElementById('AF').click();});
   b=document.getElementById('AF');if(b)b.addEventListener('change',function(){impArifs(this);});
-  b=document.getElementById('ATB');if(b)b.addEventListener('click',function(){dlFile('\uFEFF'+'الفصيل,اسم العريف,الرقم العسكري\nالفصيل الأول,أحمد محمد الكويتي,10001\n','نموذج_العرفاء.csv','text/csv;charset=utf-8');});
+  b=document.getElementById('ATB');if(b)b.addEventListener('click',function(){dlFile('\uFEFF'+'الفصيل,اسم العريف,الرقم العسكري,السنة الدراسية,السرية\nالفصيل الأول,أحمد محمد الكويتي,10001,السنة الأولى,السرية الأولى\n','نموذج_العرفاء.csv','text/csv;charset=utf-8');});
   b=document.getElementById('DFB');if(b)b.addEventListener('click',function(){document.getElementById('DF').click();});
   b=document.getElementById('DF');if(b)b.addEventListener('change',function(){impDets(this);});
   b=document.getElementById('DTB');if(b)b.addEventListener('click',function(){dlFile('\uFEFF'+'الاسم,الرقم العسكري,الفصيل,تاريخ البداية,تاريخ النهاية,السبب\nأحمد محمد الكويتي,10001,الفصيل الأول,2026-06-07,2026-06-09,مخالفة\n','نموذج_المحجوزين.csv','text/csv;charset=utf-8');});
+  b=document.getElementById('nStAdd');if(b)b.addEventListener('click',addStudentManual);
+  b=document.getElementById('USFB');if(b)b.addEventListener('click',function(){document.getElementById('USF').click();});
+  b=document.getElementById('USF');if(b)b.addEventListener('change',function(){impStdSetup(this);});
+  b=document.getElementById('USTB');if(b)b.addEventListener('click',dlTpl);
+  b=document.getElementById('nUAdd');if(b)b.addEventListener('click',addUserManual);
+  b=document.getElementById('UUFB');if(b)b.addEventListener('click',function(){document.getElementById('UUF').click();});
+  b=document.getElementById('UUF');if(b)b.addEventListener('change',function(){impUsers(this);});
+  b=document.getElementById('UUTB');if(b)b.addEventListener('click',function(){dlFile('\uFEFF'+'الاسم,الرتبة,البريد,كلمة المرور,الصلاحية,السنة الدراسية,السرية,الفصيل\nالملازم / سالم العازمي,ملازم,salem@saad.edu.kw,off123,أمر_فصيل,السنة الأولى,السرية الأولى,الفصيل الأول\nالرائد / ناصر المطيري,رائد,nasser@saad.edu.kw,seria123,أمر_سرية,السنة الأولى,السرية الثانية,\nالملازم / فهد الشمري,ملازم,fahad.guard@saad.edu.kw,grd123,ضابط_خفر,,,\n','نموذج_المستخدمين.csv','text/csv;charset=utf-8');});
+  b=document.getElementById('GSFB');if(b)b.addEventListener('click',function(){document.getElementById('GSF').click();});
+  b=document.getElementById('GSF');if(b)b.addEventListener('change',function(){impSchedules(this);});
+  b=document.getElementById('GSTB');if(b)b.addEventListener('click',function(){dlFile('\uFEFF'+'البريد,ضابط الخفر,التاريخ,السنة الدراسية,السرية,نوع المناوبة\nguard1@saad.edu.kw,الملازم أول / عبدالله الزهراني,2026-06-12,السنة الأولى,السرية الأولى,يوم عادي\n','نموذج_الخفارات.csv','text/csv;charset=utf-8');});
+
+}
+
+function addStudentManual(){
+  var n=gv('nStN');if(!n){toast('أدخل اسم الطالب','er');return;}
+  var sp=(gv('nStS')||'').split('|');var fp=(gv('nStF')||'').split('|');
+  var row={name:n,military_number:gv('nStM'),batch:gv('nStB'),study_type:gv('nStT')||'طالب ضابط',study_year:fp[4]||sp[2]||'',seria_id:sp[0]||fp[2]||null,seria_name:sp[1]||fp[3]||'',faseel_id:fp[0]||null,faseel_name:fp[1]||'',active:true};
+  sIns('students',row).then(function(res){if(Array.isArray(res)&&res[0])C.students.push(res[0]);toast('تمت إضافة الطالب','ok');rSetup();});
+}
+function impStdSetup(input){
+  var file=input.files[0];if(!file)return;
+  var res=document.getElementById('USR');if(res)res.innerHTML='<span style="color:var(--ink3);">جار المعالجة...</span>';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split('\n');
+    var hdrs=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});
+    var students=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;
+      var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
+      var obj={};hdrs.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var name=obj['الاسم']||'';if(!name)continue;
+      var fN=obj['الفصيل']||'';var sN=obj['السرية']||'';var y=obj['السنة الدراسية']||'';var st=obj['نوع الدراسة']||'طالب ضابط';
+      var sObj=C.serias.find(function(s){return s.name===sN&&s.study_year===y;});
+      var fObj=C.faseels.find(function(f){return f.name===fN&&f.study_year===y&&(!sObj||f.seria_id===sObj.id);});
+      students.push({name:name,military_number:obj['الرقم العسكري']||'',batch:obj['الدفعة']||'',study_type:st,study_year:y,faseel_id:fObj?fObj.id:null,faseel_name:fN,seria_id:sObj?sObj.id:null,seria_name:sN,active:true});
+    }
+    if(!students.length){if(res)res.innerHTML='<span style="color:var(--red);">لم تُعثر على بيانات</span>';return;}
+    sIns('students',students).then(function(ins){
+      if(Array.isArray(ins))C.students=C.students.concat(ins);
+      if(res)res.innerHTML='<span style="color:var(--grn);">تم استيراد '+students.length+' طالب</span>';
+      toast('تم استيراد الطلبة','ok');rSetup();
+    }).catch(function(){if(res)res.innerHTML='<span style="color:var(--red);">خطأ في الحفظ</span>';});
+  };
+  reader.readAsText(file,'UTF-8');input.value='';
+}
+function addUserManual(){
+  var name=gv('nUN'), email=gv('nUE').toLowerCase(), pass=gv('nUP'), role=gv('nURO');
+  if(!name||!email||!pass||!role){toast('أدخل الاسم والبريد وكلمة المرور والصلاحية','er');return;}
+  var sp=(gv('nUS')||'').split('|');var fp=(gv('nUF')||'').split('|');
+  var user={name:name,email:email,password:pass,rank:gv('nUR'),role:role,active:true};
+  if(role==='أمر_سرية'&&sp[0]){user.seria_id=sp[0];user.seria_name=sp[1];user.study_year=sp[2];user.study_type=sp[3]||'طالب ضابط';}
+  if(role==='أمر_فصيل'&&fp[0]){user.study_year=fp[4];user.study_type=fp[5]||'طالب ضابط';}
+  sIns('app_users',user).then(function(res){
+    var u=Array.isArray(res)?res[0]:null;if(u)C.app_users.push(u);
+    if(role==='أمر_فصيل'&&u&&fp[0])return sIns('officer_faseels',{officer_id:u.id,faseel_id:fp[0]}).then(function(of){if(Array.isArray(of)&&of[0])C.officer_faseels.push(of[0]);});
+  }).then(function(){toast('تمت إضافة المستخدم','ok');rSetup();}).catch(function(){toast('خطأ في إضافة المستخدم، قد يكون البريد مكررًا','er');});
+}
+function impUsers(input){
+  var file=input.files[0];if(!file)return;var res=document.getElementById('UUR');res.innerHTML='<span style="color:var(--ink3);">جار المعالجة...</span>';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split('\n');var hdrs=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});
+    var users=[];var links=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});var obj={};hdrs.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var role=obj['الصلاحية']||'';var email=(obj['البريد']||'').toLowerCase();var name=obj['الاسم']||'';if(!role||!email||!name)continue;
+      var y=obj['السنة الدراسية']||'';var sN=obj['السرية']||'';var fN=obj['الفصيل']||'';
+      var sObj=C.serias.find(function(s){return s.name===sN&&s.study_year===y;});
+      var fObj=C.faseels.find(function(f){return f.name===fN&&f.study_year===y&&(!sObj||f.seria_id===sObj.id);});
+      var u={name:name,rank:obj['الرتبة']||'',email:email,password:obj['كلمة المرور']||'123456',role:role,active:true};
+      if(role==='أمر_سرية'&&sObj){u.seria_id=sObj.id;u.seria_name=sObj.name;u.study_year=sObj.study_year;u.study_type=sObj.study_type;}
+      if(role==='أمر_فصيل'&&fObj){u.study_year=fObj.study_year;u.study_type=fObj.study_type||'طالب ضابط';links.push({email:email,faseel_id:fObj.id});}
+      users.push(u);
+    }
+    if(!users.length){res.innerHTML='<span style="color:var(--red);">لا توجد بيانات صالحة</span>';return;}
+    sIns('app_users',users).then(function(ins){
+      if(Array.isArray(ins))C.app_users=C.app_users.concat(ins);
+      var ps=[];links.forEach(function(l){var u=(ins||[]).find(function(x){return x.email===l.email;});if(u)ps.push(sIns('officer_faseels',{officer_id:u.id,faseel_id:l.faseel_id}).then(function(of){if(Array.isArray(of)&&of[0])C.officer_faseels.push(of[0]);}));});
+      return Promise.all(ps);
+    }).then(function(){res.innerHTML='<span style="color:var(--grn);">تم استيراد '+users.length+' مستخدم</span>';toast('تم استيراد المستخدمين','ok');rSetup();}).catch(function(){res.innerHTML='<span style="color:var(--red);">خطأ في الاستيراد أو بريد مكرر</span>';});
+  };
+  reader.readAsText(file,'UTF-8');input.value='';
+}
+function impSchedules(input){
+  var file=input.files[0];if(!file)return;var res=document.getElementById('GSR');res.innerHTML='<span style="color:var(--ink3);">جار المعالجة...</span>';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split('\n');var hdrs=lines[0].split(',').map(function(h){return h.trim().replace(/"/g,'').replace(/\r/g,'');});var rows=[];
+    for(var i=1;i<lines.length;i++){
+      if(!lines[i].trim())continue;var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});var obj={};hdrs.forEach(function(h,j){obj[h]=vals[j]||'';});
+      var email=(obj['البريد']||'').toLowerCase();var off=C.app_users.find(function(u){return u.email===email||u.name===obj['ضابط الخفر'];});
+      var y=obj['السنة الدراسية']||'';var sN=obj['السرية']||'';var sObj=C.serias.find(function(s){return s.name===sN&&s.study_year===y;});
+      if(!(obj['التاريخ']||''))continue;
+      rows.push({officer_id:off?off.id:null,officer_name:off?off.name:(obj['ضابط الخفر']||''),schedule_date:obj['التاريخ'],study_year:y,study_type:sObj?(sObj.study_type||'طالب ضابط'):'طالب ضابط',seria_id:sObj?sObj.id:null,seria_name:sN,guard_type:obj['نوع المناوبة']||'يوم عادي'});
+    }
+    if(!rows.length){res.innerHTML='<span style="color:var(--red);">لا توجد بيانات</span>';return;}
+    sIns('guard_schedules',rows).then(function(ins){if(Array.isArray(ins))C.guard_schedules=C.guard_schedules.concat(ins);res.innerHTML='<span style="color:var(--grn);">تم استيراد '+rows.length+' خفارة</span>';toast('تم استيراد كشف الخفارات','ok');rSetup();}).catch(function(){res.innerHTML='<span style="color:var(--red);">خطأ في الحفظ</span>';});
+  };
+  reader.readAsText(file,'UTF-8');input.value='';
 }
 function addSeria(){var n=gv('nSN');if(!n){toast('أدخل الاسم','er');return;}sIns('serias',{name:n,study_year:gv('nSY'),study_type:gv('nST')}).then(function(res){if(Array.isArray(res)&&res[0])C.serias.push(res[0]);document.getElementById('nSN').value='';rSetup();toast('تمت الإضافة','ok');});}
-function addFaseel(){var n=gv('nFN');if(!n){toast('أدخل اسم الفصيل','er');return;}var sp=(gv('nFS')||'').split('|');sIns('faseels',{name:n,seria_id:sp[0]||null,seria_name:sp[1]||'',study_year:gv('nFY'),count:parseInt(gv('nFC'))||40}).then(function(res){if(Array.isArray(res)&&res[0])C.faseels.push(res[0]);document.getElementById('nFN').value='';fillRFAS();rSetup();toast('تمت الإضافة','ok');});}
+function addFaseel(){var n=gv('nFN');if(!n){toast('أدخل اسم الفصيل','er');return;}var sp=(gv('nFS')||'').split('|');var yr=sp[2]||gv('nFY');sIns('faseels',{name:n,seria_id:sp[0]||null,seria_name:sp[1]||'',study_year:yr,study_type:sp[3]||'طالب ضابط',count:parseInt(gv('nFC'))||20}).then(function(res){if(Array.isArray(res)&&res[0])C.faseels.push(res[0]);document.getElementById('nFN').value='';fillRFAS();rSetup();toast('تمت الإضافة','ok');});}
 function addVT(){var n=gv('nVN');if(!n){toast('أدخل اسم المخالفة','er');return;}sIns('violation_types',{name:n,punishment:gv('nVP'),duration:gv('nVD'),auto_detain:gv('nVA')==='true'}).then(function(res){if(Array.isArray(res)&&res[0])C.violation_types.push(res[0]);['nVN','nVP','nVD'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});rSetup();toast('تمت الإضافة','ok');});}
-function addSch(){var op=(gv('nGO')||'').split('|');if(!op[0]){toast('اختر ضابط الخفر','er');return;}var date=gv('nGD');if(!date){toast('حدد التاريخ','er');return;}var sp=(gv('nGS')||'').split('|');sIns('guard_schedules',{officer_id:op[0],officer_name:op[1]||'',schedule_date:date,study_year:gv('nGY'),guard_type:gv('nGT'),seria_id:sp[0]||null,seria_name:sp[1]||''}).then(function(res){if(Array.isArray(res)&&res[0])C.guard_schedules.unshift(res[0]);rSetup();toast('تمت الإضافة للكشف','ok');});}
+function addSch(){var op=(gv('nGO')||'').split('|');if(!op[0]){toast('اختر ضابط الخفر','er');return;}var date=gv('nGD');if(!date){toast('حدد التاريخ','er');return;}var sp=(gv('nGS')||'').split('|');sIns('guard_schedules',{officer_id:op[0],officer_name:op[1]||'',schedule_date:date,study_year:sp[2]||gv('nGY'),study_type:sp[3]||'طالب ضابط',guard_type:gv('nGT'),seria_id:sp[0]||null,seria_name:sp[1]||''}).then(function(res){if(Array.isArray(res)&&res[0])C.guard_schedules.unshift(res[0]);rSetup();toast('تمت الإضافة للكشف','ok');});}
 function impArifs(input){
   var file=input.files[0];if(!file)return;
   var res=document.getElementById('AR');res.innerHTML='<span style="color:var(--ink3);">جار المعالجة...</span>';
@@ -1305,8 +1423,8 @@ function impArifs(input){
       if(!lines[i].trim())continue;
       var vals=lines[i].split(',').map(function(v){return v.trim().replace(/"/g,'').replace(/\r/g,'');});
       var obj={};hdrs.forEach(function(h,j){obj[h]=vals[j]||'';});
-      var fN=obj['الفصيل']||'';var aN=obj['اسم العريف']||'';if(!fN||!aN)continue;
-      var f=C.faseels.find(function(x){return x.name===fN;});
+      var fN=obj['الفصيل']||'';var aN=obj['اسم العريف']||'';var y=obj['السنة الدراسية']||'';var sN=obj['السرية']||'';if(!fN||!aN)continue;
+      var f=C.faseels.find(function(x){return x.name===fN&&(!y||x.study_year===y)&&(!sN||x.seria_name===sN);});
       if(!f){nf.push(fN);continue;}
       (function(fid,an){promises.push(sPch('faseels',fid,{arif_name:an}).then(function(){var idx=C.faseels.findIndex(function(x){return x.id===fid;});if(idx>=0)C.faseels[idx].arif_name=an;updated++;}));})(f.id,aN);
     }
@@ -1333,7 +1451,7 @@ function impDets(input){
 }
 // ══ LOG ══
 function rLog(){
-  var body=document.getElementById('LB');
+  var body=document.getElementById('LOG_BODY');
   if(!C.logs.length){body.innerHTML='<div class="empty"><div class="ei">🕐</div><p>لا توجد سجلات نشاط</p></div>';return;}
   var h='<div class="tw"><table><thead><tr><th>العملية</th><th>المستخدم</th><th>التفاصيل</th><th>الوقت</th></tr></thead><tbody>';
   C.logs.forEach(function(l){
