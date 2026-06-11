@@ -129,7 +129,21 @@ tbody tr:last-child td{border-bottom:none;}tbody tr:hover{background:var(--sf2);
 @keyframes spn{to{transform:rotate(360deg);}}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--n);color:#fff;padding:12px 24px;border-radius:28px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:var(--s3);border-top:2px solid var(--g);}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}.toast.ok{background:var(--grn);}.toast.er{background:var(--red);}
-@media print{.sn,.tb,.nb2,.np,.btn{display:none!important;}.lay{display:block;}.pg{display:block!important;}.cd{box-shadow:none;border:1px solid #ccc;}}
+@media print{
+  body{background:#fff!important;color:#000!important;}
+  .sn,.tb,.nb2,.np,.btn,.toast,.ov{display:none!important;}
+  .lay,.mn,.ct{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;}
+  .pg{display:none!important;}
+  .pg.on{display:block!important;}
+  body.print-report .pg{display:none!important;}
+  body.print-report #pg-rpt{display:block!important;}
+  body.print-report #pg-rpt .cd.np{display:none!important;}
+  .cd{box-shadow:none!important;border:1px solid #ccc!important;border-radius:8px!important;break-inside:avoid;margin-bottom:12px!important;}
+  .tw{overflow:visible!important;box-shadow:none!important;border:1px solid #ccc!important;}
+  table{min-width:0!important;width:100%!important;}
+  thead th{background:#1B3A6B!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .tag{border:1px solid #ddd!important;}
+}
 @media(max-width:768px){.sn{display:none;}.kg{grid-template-columns:1fr 1fr;}.cgr{grid-template-columns:1fr;}.g2{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}.rst{grid-template-columns:1fr 1fr;}.brow{flex-direction:column;}.ct{padding:16px 12px 80px;}}
 
 
@@ -412,7 +426,7 @@ data@saad.edu.kw / data123 — مدخل البيانات
 <button class="btn bn" id="RGN">إنشاء التقرير</button>
 <button class="btn bh bsm" id="RWK">هذا الأسبوع</button>
 <button class="btn bh bsm" id="RMO">هذا الشهر</button>
-<button class="btn bh bsm" onclick="window.print()">طباعة</button>
+<button class="btn bh bsm" onclick="printReportOnly()">طباعة التقرير فقط</button>
 <button class="btn bg bsm" id="RXP2">تصدير</button>
 </div>
 </div>
@@ -1661,6 +1675,15 @@ function rLog(){
     h+='<td style="font-size:11px;white-space:nowrap;">'+fDT(l.created_at)+'</td></tr>';
   });
   h+='</tbody></table></div>';body.innerHTML=h;
+}
+
+
+function printReportOnly(){
+  var txt=(document.getElementById('RPB')&&document.getElementById('RPB').innerText)||'';
+  if(txt.indexOf('حدد الفترة')>=0){toast('أنشئ التقرير أولًا ثم اطبعه','er');return;}
+  document.body.classList.add('print-report');
+  window.print();
+  setTimeout(function(){document.body.classList.remove('print-report');},800);
 }
 
 // ══ HELPERS ══
