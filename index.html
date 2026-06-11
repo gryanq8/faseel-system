@@ -198,6 +198,105 @@ tbody tr:last-child td{border-bottom:none;}tbody tr:hover{background:var(--sf2);
   .mo{max-height:88vh;padding:22px 14px 36px;}
 }
 
+
+
+/* تحسين إضافي لشاشات الآيفون الصغيرة */
+@media(max-width:480px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden;background:var(--bg);}
+
+  /* الشريط العلوي: تقليل الازدحام */
+  .tb{
+    position:sticky;
+    top:0;
+    height:54px;
+    min-height:54px;
+    padding:6px 8px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px;
+    overflow:hidden;
+  }
+  .tbl{max-width:125px;gap:6px;overflow:hidden;}
+  .tbi{width:30px;height:30px;min-width:30px;}
+  .tbt{font-size:11px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tbs{display:none!important;}
+  .tbr{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:nowrap;min-width:0;overflow:hidden;}
+  #TD{display:none!important;}
+  .tbb{width:28px;height:28px;font-size:13px;min-width:28px;}
+  .tbu{height:30px;padding:3px 6px;min-width:0;max-width:98px;}
+  .tbav{width:24px;height:24px;font-size:10px;min-width:24px;}
+  .tbnm{font-size:10px;max-width:56px;line-height:1.2;white-space:normal;overflow:hidden;}
+  .tbrl{display:none!important;}
+  .to{height:30px;padding:4px 8px;font-size:10px;min-width:48px;}
+
+  /* إخفاء الشريط التعريفي في الجوال حتى لا يضغط الصفحة */
+  .nb2{display:none!important;}
+
+  .lay{display:block;min-height:auto;}
+  .mn{width:100%;max-width:100%;padding-bottom:84px;overflow-x:hidden;}
+  .ct{width:100%;max-width:100%;padding:18px 12px 96px;}
+
+  .ph{margin-bottom:14px;text-align:right;}
+  .ptt{font-size:24px;line-height:1.3;}
+  .pst{font-size:13px;line-height:1.6;}
+
+  /* الكروت والنماذج */
+  .cd,.cw,.rc,.ac{width:100%;max-width:100%;padding:16px 14px;border-radius:14px;margin-bottom:14px;}
+  .cdh{align-items:center;gap:8px;margin-bottom:14px;padding-bottom:12px;}
+  .cdi{width:34px;height:34px;min-width:34px;}
+  .cdt{font-size:15px;line-height:1.4;}
+  .cds{font-size:12px;line-height:1.4;}
+
+  .g2,.g3,.g4,.cgr{grid-template-columns:1fr!important;gap:10px!important;}
+  .kg,.rst{grid-template-columns:1fr 1fr!important;gap:8px;}
+
+  .fi label{font-size:12px;margin-bottom:6px;}
+  .fi input,.fi select,.fi textarea{font-size:16px;min-height:46px;padding:10px 12px;border-radius:10px;}
+  .fi textarea{min-height:86px;}
+
+  .ctr{justify-content:space-between;width:100%;}
+  .ctr input{width:88px;min-height:44px;font-size:18px;}
+  .cb{width:44px;height:44px;font-size:20px;border-radius:12px;}
+
+  .btn{min-height:42px;font-size:13px;border-radius:10px;}
+  .brow{flex-direction:column;gap:8px;}
+  .brow .btn,.pac .btn{width:100%;}
+
+  .sb{display:block;}
+  .sbi{width:100%;margin-bottom:8px;}
+  .sbi input{font-size:15px;min-height:42px;}
+  .sb select,.sb input[type="date"]{width:100%;min-height:42px;margin-bottom:8px;}
+
+  .tw{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:760px;}
+
+  /* الشريط السفلي للتنقل */
+  .sn{
+    display:flex!important;
+    position:fixed;
+    bottom:0;
+    right:0;
+    left:0;
+    top:auto;
+    width:100%;
+    height:70px;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+    z-index:999;
+    background:var(--n);
+    border-top:2px solid var(--g);
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+  }
+  .sn::-webkit-scrollbar{display:none;}
+  .nl,.ndv{display:none!important;}
+  .ni{width:74px;height:56px;min-width:74px;margin:0 2px;padding:5px 3px;flex-direction:column;gap:2px;justify-content:center;text-align:center;font-size:10px;border-radius:10px;}
+  .nic{font-size:17px;}
+
+  .mo{border-radius:18px 18px 0 0;padding:22px 14px calc(34px + env(safe-area-inset-bottom));}
+}
+
 </style></head><body>
 
 <div id="LP">
